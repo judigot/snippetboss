@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model language {
+  lang_id   BigInt    @id @default(autoincrement())
+  lang_name String    @unique @db.VarChar(32)
+  snippet   snippet[]
+}
+
+model snippet {
+  snippet_id      BigInt       @id @default(autoincrement())
+  lang_id         BigInt
+  snippet_type_id BigInt
+  snippet_name    String       @unique @db.VarChar(32)
+  snippet_content String?
+  language        language     @relation(fields: [lang_id], references: [lang_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_snippet.lang_id")
+  snippet_type    snippet_type @relation(fields: [snippet_type_id], references: [snippet_type_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_snippet.snippet_type_id")
+}
+
+model snippet_type {
+  snippet_type_id   BigInt    @id @default(autoincrement())
+  snippet_type_name String    @unique @db.VarChar(32)
+  snippet           snippet[]
+}
