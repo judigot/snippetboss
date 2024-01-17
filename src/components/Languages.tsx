@@ -2,11 +2,17 @@
 
 import {FormEvent, useEffect, useState} from 'react';
 import {language} from '@prisma/client';
+import {createLanguage} from '@/helpers/api/language/create-language';
 
 export default function Home() {
   const [languages, setLanguages] = useState<language[]>([]);
 
   useEffect(() => {
+    // readLanguage()
+    //   .then((result: language[]) => {
+    //     setLanguages(result);
+    //   })
+    //   .catch(() => {});
     fetch(`http://localhost:3000/api/v1/languages`, {
       // *GET, POST, PATCH, PUT, DELETE
       method: 'GET',
@@ -22,10 +28,7 @@ export default function Home() {
         // Success
         setLanguages(result);
       })
-      .catch((error: string) => {
-        // Failure
-        throw new Error(error);
-      });
+      .catch(() => {});
   }, []);
 
   return (
@@ -65,26 +68,12 @@ export function AddLanguageComponent() {
     const {lang_name, display_name} = formData;
 
     if (lang_name && display_name !== null) {
-      fetch(`http://localhost:3000/api/v1/languages`, {
-        // *GET, POST, PATCH, PUT, DELETE
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        // For POST, PATCH, and PUT requests
-        body: JSON.stringify(formData),
-      })
-        .then((response) => response.json())
-        .then((result: language[]) => {
-          // Success
+      createLanguage(formData)
+        .then(() => {
           setFormData(formData);
           setIsFormVisible(false);
         })
-        .catch((error: string) => {
-          // Failure
-          throw new Error(error);
-        });
+        .catch(() => {});
     }
   };
 
