@@ -11,7 +11,7 @@ interface Data extends snippet {
 const GetHandler = async (req: NextRequest) => {
   const prisma = new PrismaClient();
   try {
-    let result = await prisma.snippet.findMany();
+    const result = await prisma.snippet.findMany();
     return NextResponse.json<Data[]>(DatatypeParser(result));
   } catch (error) {
     console.error(error);
