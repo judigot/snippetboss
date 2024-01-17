@@ -8,7 +8,10 @@ async function main() {
   });
 
   await prisma.language.createMany({
-    data: [{lang_name: 'typescript'}, {lang_name: 'java'}],
+    data: [
+      {lang_name: 'typescript', display_name: 'TypeScript'},
+      {lang_name: 'java', display_name: 'Java'},
+    ],
   });
 
   await prisma.prefix.createMany({
