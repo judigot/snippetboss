@@ -1,15 +1,13 @@
 import {NextRequest, NextResponse} from 'next/server';
 
-import {PrismaClient, language} from '@prisma/client';
+import {language} from '@prisma/client';
 
 import DatatypeParser from '@/utils/DataTypeParser';
+import {prisma} from '@/prisma/DatabaseClient';
 
-interface Data extends language {
-  customProperty?: string;
-}
+interface Data extends language {}
 
 const GetHandler = async (req: NextRequest) => {
-  const prisma = new PrismaClient();
   try {
     const result = await prisma.language.findMany();
     return NextResponse.json<Data[]>(DatatypeParser(result));

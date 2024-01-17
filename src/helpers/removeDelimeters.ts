@@ -1,6 +1,6 @@
 const removeDelimiters = (text: string): string => {
   // Regular expression to match the VS Code snippet delimiters
-  let regex = /\$\{\d+:([^}]*)\}/g;
+  const regex = /\$\{\d+:([^}]*)\}/g;
 
   // Initialize a variable to track if replacements were made
   let replacementsMade;
@@ -10,7 +10,7 @@ const removeDelimiters = (text: string): string => {
     replacementsMade = false;
 
     // Replace the matched delimiters with their default values
-    text = text.replace(regex, (_, defaultValue) => {
+    text = text.replace(regex, (_, defaultValue: string) => {
       replacementsMade = true;
       return defaultValue;
     });

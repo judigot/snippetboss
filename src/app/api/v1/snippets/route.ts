@@ -1,4 +1,4 @@
-import {NextRequest, NextResponse} from 'next/server';
+import { NextRequest } from 'next/server';
 
 import GetHandler from './Get';
 import PostHandler from './Post';
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   return GetHandler(req);
 }
 export async function POST(req: NextRequest) {
-  return GetHandler(req);
+  return PostHandler(req);
 }
 // export async function PATCH (req: NextRequest) {PatchHandler(req)};
 // export async function PUT (req: NextRequest) {PutHandler(req)};

@@ -1,15 +1,11 @@
 import {NextRequest, NextResponse} from 'next/server';
-
-import {PrismaClient, snippet} from '@prisma/client';
-
+import {snippet} from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
+import {prisma} from '@/prisma/DatabaseClient';
 
-interface Data extends snippet {
-  customProperty?: string;
-}
+interface Data extends snippet {}
 
 const GetHandler = async (req: NextRequest) => {
-  const prisma = new PrismaClient();
   try {
     const result = await prisma.snippet.findMany();
     return NextResponse.json<Data[]>(DatatypeParser(result));
