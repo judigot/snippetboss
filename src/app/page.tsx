@@ -37,7 +37,7 @@ import removeDelimiters from '@/helpers/removeDelimeters';
 
 export default async function Home() {
   const prisma = new PrismaClient();
-  let result = DatatypeParser(
+  const result = DatatypeParser(
     await prisma.prefix.findMany({
       include: {
         snippet: {
@@ -53,7 +53,7 @@ export default async function Home() {
       {result?.map(({prefix_id, prefix_name, snippet}, i) => (
         <div key={prefix_id}>
           <h1>{prefix_name}</h1>
-          {snippet[0].snippet_content && (
+          {snippet[0].snippet_content !== null && (
             <textarea
               readOnly
               style={{height: '250px', width: '500px'}}
