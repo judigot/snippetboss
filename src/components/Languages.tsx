@@ -73,7 +73,7 @@ export default function Home() {
             {display_name !== '' ? display_name : lang_name}
           </button>
         ))}
-      {languages && <span>No languages</span>}
+      {!languages && <span>No languages</span>}
       <AddLanguageComponent />
       {currentLang && <Snippets language={currentLang}></Snippets>}
     </>
