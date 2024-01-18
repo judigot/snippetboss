@@ -1,5 +1,7 @@
 type DataBody = BodyInit;
 
+const ROOT_URL: string = 'http://localhost:3000/api/v1';
+
 export interface FetchOptions extends RequestInit {
   timeout?: number;
   body?: DataBody;
@@ -90,7 +92,7 @@ const customFetchInternal = async <T>(
   finalOptions.signal = controller.signal;
 
   try {
-    let response: Response = await fetch(url, finalOptions);
+    let response: Response = await fetch(`${ROOT_URL}${url}`, finalOptions);
     clearTimeout(id);
 
     if (!response.ok) {

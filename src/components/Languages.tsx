@@ -2,31 +2,18 @@
 
 import {FormEvent, useEffect, useState} from 'react';
 import {language} from '@prisma/client';
-import {createLanguage} from '@/helpers/api/language/create-language';
+import {createLanguage} from '@/api-calls/language/create-language';
+import {readLanguage} from '@/api-calls/language/read-language';
 
 export default function Home() {
   const [languages, setLanguages] = useState<language[]>([]);
 
   useEffect(() => {
-    // readLanguage()
-    //   .then((result: language[]) => {
-    //     setLanguages(result);
-    //   })
-    //   .catch(() => {});
-    fetch(`http://localhost:3000/api/v1/languages`, {
-      // *GET, POST, PATCH, PUT, DELETE
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      // For POST, PATCH, and PUT requests
-      // body: JSON.stringify({ key: "value" }),
-    })
-      .then((response) => response.json())
-      .then((result: language[]) => {
-        // Success
-        setLanguages(result);
+    readLanguage()
+      .then((result) => {
+        if (result) {
+          setLanguages(result);
+        }
       })
       .catch(() => {});
   }, []);
