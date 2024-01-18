@@ -1,7 +1,7 @@
-import {NextRequest, NextResponse} from 'next/server';
-import {snippet} from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+import { snippet } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
-import {prisma} from '@/prisma/DatabaseClient';
+import { prisma } from '@/prisma/DatabaseClient';
 
 interface Data extends snippet {}
 
@@ -10,7 +10,7 @@ const GetHandler = async (req: NextRequest) => {
     // snippets?language=value
     const language = req.nextUrl.searchParams.get('language');
     if (language !== null) {
-      return NextResponse.json({language});
+      return NextResponse.json({ language });
     }
 
     // snippets?language=value

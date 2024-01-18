@@ -1,5 +1,5 @@
-import {customFetch} from '@/api-calls/customFetch';
-import {language} from '@prisma/client';
+import { customFetch } from '@/api-calls/customFetch';
+import { language } from '@prisma/client';
 
 interface Data extends language {}
 

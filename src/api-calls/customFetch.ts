@@ -66,7 +66,7 @@ const customFetchInternal = async <T>(
     throw new Error('URL must be a valid string');
   }
 
-  const mergedOptions: FetchOptions = {...defaultOptions, ...options};
+  const mergedOptions: FetchOptions = { ...defaultOptions, ...options };
 
   const finalOptions: FetchOptions = applyRequestInterceptors(
     url,
@@ -113,16 +113,19 @@ const customFetchInternal = async <T>(
 };
 
 export const customFetch = {
-  get: async <T>(params: {url: string; options?: FetchOptions}): Promise<T> => {
-    const {url, options} = params;
-    return customFetchInternal<T>(url, {...options, method: 'GET'});
+  get: async <T>(params: {
+    url: string;
+    options?: FetchOptions;
+  }): Promise<T> => {
+    const { url, options } = params;
+    return customFetchInternal<T>(url, { ...options, method: 'GET' });
   },
   post: async <T>(params: {
     url: string;
     body: DataBody;
     options?: FetchOptions;
   }): Promise<T> => {
-    const {url, body, options} = params;
-    return customFetchInternal<T>(url, {...options, method: 'POST', body});
+    const { url, body, options } = params;
+    return customFetchInternal<T>(url, { ...options, method: 'POST', body });
   },
 };

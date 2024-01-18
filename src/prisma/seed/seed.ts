@@ -1,21 +1,21 @@
-import {PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await prisma.snippet_type.createMany({
-    data: [{snippet_type_name: 'global'}, {snippet_type_name: 'specific'}],
+    data: [{ snippet_type_name: 'global' }, { snippet_type_name: 'specific' }],
   });
 
   await prisma.language.createMany({
     data: [
-      {lang_name: 'typescript', display_name: 'TypeScript'},
-      {lang_name: 'java', display_name: 'Java'},
+      { lang_name: 'typescript', display_name: 'TypeScript' },
+      { lang_name: 'java', display_name: 'Java' },
     ],
   });
 
   await prisma.prefix.createMany({
-    data: [{prefix_name: 'log'}, {prefix_name: 'logRed'}],
+    data: [{ prefix_name: 'log' }, { prefix_name: 'logRed' }],
   });
 
   await prisma.snippet.createMany({
@@ -36,8 +36,8 @@ async function main() {
 
   await prisma.snippet_language.createMany({
     data: [
-      {snippet_id: 1, language_id: 1},
-      {snippet_id: 2, language_id: 2},
+      { snippet_id: 1, language_id: 1 },
+      { snippet_id: 2, language_id: 2 },
     ],
   });
 }

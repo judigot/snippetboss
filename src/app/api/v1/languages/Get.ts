@@ -1,9 +1,9 @@
-import {NextRequest, NextResponse} from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-import {language} from '@prisma/client';
+import { language } from '@prisma/client';
 
 import DatatypeParser from '@/utils/DataTypeParser';
-import {prisma} from '@/prisma/DatabaseClient';
+import { prisma } from '@/prisma/DatabaseClient';
 
 interface Data extends language {}
 

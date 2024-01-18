@@ -1,15 +1,37 @@
 'use client';
 
-import {FormEvent, useEffect, useState} from 'react';
-import {language} from '@prisma/client';
-import {createLanguage} from '@/api-calls/language/create-language';
-import {readLanguage} from '@/api-calls/language/read-language';
+import { FormEvent, useEffect, useState } from 'react';
+import { language } from '@prisma/client';
+import { createLanguage } from '@/api-calls/language/create-language';
+import { readLanguage } from '@/api-calls/language/read-language';
 import Snippets from '@/components/Snippets';
 
-export default function Home() {
-  const [languages, setLanguages] = useState<language[]>([]);
+const DEFAULT_TITLE: string = 'SnippetMaster';
 
-  const [currentLang, setCurrentLang] = useState<string>('');
+const getLangFromURL = () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const language = (searchParams.get('language') ?? '') || ''; // Default to an empty string if parameter is not present
+  return language;
+};
+
+export default function Home() {
+  const [languages, setLanguages] = useState<language[] | null>([]);
+
+  const [currentLang, setCurrentLang] = useState<string>(getLangFromURL());
+
+  const setURLParam = (language: string) => {
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('language', language);
+    window.history.pushState({}, '', newUrl.toString());
+    document.title = language;
+  };
+
+  const changeLanguage = (language: string) => {
+    setURLParam(language);
+    setCurrentLang(() => {
+      return language;
+    });
+  };
 
   useEffect(() => {
     readLanguage()
@@ -20,33 +42,40 @@ export default function Home() {
       })
       .catch(() => {});
 
-    const searchParams = new URLSearchParams(window.location.search);
-    const lang = (searchParams.get('language') ?? '') || ''; // Default to an empty string if parameter is not present
-    setCurrentLang(lang);
-  }, []);
+    const handlePopState = () => {
+      const language = getLangFromURL();
 
-  useEffect(() => {
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('language', currentLang);
-    window.history.pushState({}, '', newUrl.toString());
-  }, [currentLang]);
+      if (language === '') {
+        document.title = DEFAULT_TITLE;
+        setCurrentLang('');
+      }
+
+      document.title = language || '';
+      setCurrentLang(language);
+    };
+    handlePopState();
+    window.removeEventListener('popstate', handlePopState);
+    return () => {
+      window.addEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   return (
     <>
-      {languages.length !== 0 &&
-        languages?.map(({lang_id, display_name, lang_name}, i) => (
+      {languages &&
+        languages?.map(({ lang_id, display_name, lang_name }, i) => (
           <button
             key={lang_id}
             onClick={() => {
-              setCurrentLang(lang_name);
+              changeLanguage(lang_name);
             }}
           >
             {display_name !== '' ? display_name : lang_name}
           </button>
         ))}
-      {languages.length === 0 && <span>No languages</span>}
+      {languages && <span>No languages</span>}
       <AddLanguageComponent />
-      <Snippets language={currentLang}></Snippets>
+      {currentLang && <Snippets language={currentLang}></Snippets>}
     </>
   );
 }
@@ -64,14 +93,14 @@ export function AddLanguageComponent() {
   const [message] = useState<string>('');
 
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
-    const {name, value} = e.currentTarget;
-    setFormData({...formData, [name]: value});
+    const { name, value } = e.currentTarget;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const {lang_name, display_name} = formData;
+    const { lang_name, display_name } = formData;
 
     if (lang_name && display_name !== null) {
       createLanguage(formData)
@@ -95,7 +124,7 @@ export function AddLanguageComponent() {
 
       {isFormVisible && (
         <form
-          style={{display: 'inline-block'}}
+          style={{ display: 'inline-block' }}
           onSubmit={(e) => {
             handleSubmit(e);
           }}

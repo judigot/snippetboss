@@ -1,11 +1,15 @@
-import {customFetch} from '@/api-calls/customFetch';
-import {snippet} from '@prisma/client';
+import { customFetch } from '@/api-calls/customFetch';
+import { language, prefix, snippet } from '@prisma/client';
 
-interface Data extends snippet {}
+// interface Data extends snippet {}
 
-export const readSnippet = async (language: string): Promise<Data[] | null> => {
-  const result: Data[] | null = await customFetch.get({
-    url: `/snippets?language=${language}`,
+export type SnippetDataType = snippet & language & prefix;
+
+export const readSnippet = async (
+  language: string,
+): Promise<SnippetDataType[] | null> => {
+  const result: SnippetDataType[] | null = await customFetch.get({
+    url: `/snippets/${language}`,
   });
   return result;
 };

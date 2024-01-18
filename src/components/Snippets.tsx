@@ -1,15 +1,15 @@
 // 'use client';
 
-import {readSnippet} from '@/api-calls/snippet/read-snippet';
-import {snippet} from '@prisma/client';
-import {useEffect, useState} from 'react';
+import { SnippetDataType, readSnippet } from '@/api-calls/snippet/read-snippet';
+import { useEffect, useState } from 'react';
 
 interface Props {
   language: string;
 }
 
-export default function Snippets({language}: Props) {
-  const [snippets, setSnippets] = useState<snippet[]>([]);
+export default function Snippets({ language }: Props) {
+  const [snippets, setSnippets] = useState<SnippetDataType[] | null>([]);
+
   useEffect(() => {
     readSnippet(language)
       .then((result) => {
@@ -19,5 +19,19 @@ export default function Snippets({language}: Props) {
       })
       .catch(() => {});
   }, [language]);
-  return <div>{JSON.stringify(snippets, null, 4)}</div>;
+
+  return (
+    <div>
+      {snippets && (
+        <>
+          {snippets?.map(({ prefix_id, snippet_content, prefix_name }, i) => (
+            <div key={prefix_id}>
+              <h1>{prefix_name}</h1>
+              <textarea readOnly value={snippet_content ?? ''} />
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
 }
