@@ -4,9 +4,12 @@ import {FormEvent, useEffect, useState} from 'react';
 import {language} from '@prisma/client';
 import {createLanguage} from '@/api-calls/language/create-language';
 import {readLanguage} from '@/api-calls/language/read-language';
+import Snippets from '@/components/Snippets';
 
 export default function Home() {
   const [languages, setLanguages] = useState<language[]>([]);
+
+  const [currentLang, setCurrentLang] = useState<string>('');
 
   useEffect(() => {
     readLanguage()
@@ -16,18 +19,34 @@ export default function Home() {
         }
       })
       .catch(() => {});
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const lang = (searchParams.get('language') ?? '') || ''; // Default to an empty string if parameter is not present
+    setCurrentLang(lang);
   }, []);
+
+  useEffect(() => {
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('language', currentLang);
+    window.history.pushState({}, '', newUrl.toString());
+  }, [currentLang]);
 
   return (
     <>
       {languages.length !== 0 &&
         languages?.map(({lang_id, display_name, lang_name}, i) => (
-          <button key={lang_id}>
+          <button
+            key={lang_id}
+            onClick={() => {
+              setCurrentLang(lang_name);
+            }}
+          >
             {display_name !== '' ? display_name : lang_name}
           </button>
         ))}
       {languages.length === 0 && <span>No languages</span>}
       <AddLanguageComponent />
+      <Snippets language={currentLang}></Snippets>
     </>
   );
 }
@@ -71,7 +90,7 @@ export function AddLanguageComponent() {
           setIsFormVisible(!isFormVisible);
         }}
       >
-        Add language
+        +
       </button>
 
       {isFormVisible && (
