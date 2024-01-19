@@ -6,9 +6,12 @@ import { createLanguage } from '@/api-calls/language/create-language';
 import { readLanguage } from '@/api-calls/language/read-language';
 import Snippets from '@/components/Snippets';
 
-const DEFAULT_TITLE: string = 'SnippetMaster';
+// const DEFAULT_TITLE: string = 'SnippetMaster';
 
 const getLangFromURL = () => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
   const searchParams = new URLSearchParams(window.location.search);
   const language = (searchParams.get('language') ?? '') || ''; // Default to an empty string if parameter is not present
   return language;
@@ -17,9 +20,14 @@ const getLangFromURL = () => {
 export default function Home() {
   const [languages, setLanguages] = useState<language[] | null>([]);
 
-  const [currentLang, setCurrentLang] = useState<string>(getLangFromURL());
+  const [currentLang, setCurrentLang] = useState<string | null>(
+    getLangFromURL(),
+  );
 
   const setURLParam = (language: string) => {
+    if (typeof window === 'undefined') {
+      return;
+    }
     const newUrl = new URL(window.location.href);
     newUrl.searchParams.set('language', language);
     window.history.pushState({}, '', newUrl.toString());
@@ -43,15 +51,13 @@ export default function Home() {
       .catch(() => {});
 
     const handlePopState = () => {
-      const language = getLangFromURL();
-
-      if (language === '') {
-        document.title = DEFAULT_TITLE;
-        setCurrentLang('');
-      }
-
-      document.title = language || '';
-      setCurrentLang(language);
+      // const language = getLangFromURL();
+      // if (language === '') {
+      //   document.title = DEFAULT_TITLE;
+      //   setCurrentLang('');
+      // }
+      // document.title = language ?? '';
+      // setCurrentLang(language);
     };
     handlePopState();
     window.removeEventListener('popstate', handlePopState);
@@ -63,7 +69,7 @@ export default function Home() {
   return (
     <>
       {languages &&
-        languages?.map(({ lang_id, display_name, lang_name }, i) => (
+        languages?.map(({ lang_id, display_name, lang_name }) => (
           <button
             key={lang_id}
             onClick={() => {
@@ -75,7 +81,9 @@ export default function Home() {
         ))}
       {!languages && <span>No languages</span>}
       <AddLanguageComponent />
-      {currentLang && <Snippets language={currentLang}></Snippets>}
+      {currentLang !== null && currentLang !== '' && (
+        <Snippets language={currentLang}></Snippets>
+      )}
     </>
   );
 }
@@ -89,8 +97,6 @@ export function AddLanguageComponent() {
     lang_name: '',
     display_name: '',
   });
-
-  const [message] = useState<string>('');
 
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
@@ -146,8 +152,6 @@ export function AddLanguageComponent() {
           />
 
           <button type="submit">Submit</button>
-
-          {message && <p>{message}</p>}
         </form>
       )}
     </>

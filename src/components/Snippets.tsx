@@ -24,8 +24,8 @@ export default function Snippets({ language }: Props) {
     <div>
       {snippets && (
         <>
-          {snippets?.map(({ prefix_id, snippet_content, prefix_name }, i) => (
-            <div key={prefix_id}>
+          {snippets?.map(({ snippet_id, snippet_content, prefix_name }) => (
+            <div key={snippet_id}>
               <h1>{prefix_name}</h1>
               <textarea readOnly value={snippet_content ?? ''} />
             </div>
