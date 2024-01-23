@@ -3,14 +3,6 @@ export const StringModifier = (initialValue: string) => {
 
   const builder = {
     get: () => result,
-    capitalize: () => {
-      result = result.toUpperCase();
-      return builder;
-    },
-    append: (str: string) => {
-      result += str;
-      return builder;
-    },
     removeDelimiters: () => {
       // Regular expression to match the outermost layer of delimiters
       const regex = /\$\{\d+:(.*?)\}/;
@@ -20,6 +12,19 @@ export const StringModifier = (initialValue: string) => {
         result = result.replace(regex, '$1');
       }
 
+      return builder;
+    },
+    quoteLines: () => {
+      // Split the result into lines, then quote each line and join them back
+      result = result
+        .split('\n')
+        .map((line) => `"${line}",`)
+        .join('\n');
+      return builder;
+    },
+    escapeQuotes: () => {
+      // Replace all double quotes with escaped double quotes
+      result = result.replace(/"/g, '\\"');
       return builder;
     },
   };

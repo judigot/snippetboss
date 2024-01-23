@@ -29,7 +29,10 @@ export default function Snippets({ language }: Props) {
             <div key={snippet_id}>
               <h1>{prefix_name}</h1>
               {snippet_content !== null && (
-                <TextArea rawContent={snippet_content} />
+                <TextArea
+                  snippetID={snippet_id}
+                  defaultContent={snippet_content}
+                />
               )}
             </div>
           ))}
@@ -39,31 +42,78 @@ export default function Snippets({ language }: Props) {
   );
 }
 
-const TextArea = ({ rawContent }: { rawContent: string }) => {
-  const transformedContent: string = (() => {
-    return StringModifier(rawContent).removeDelimiters().get();
-  })();
+const TextArea = ({
+  snippetID,
+  defaultContent,
+}: {
+  snippetID: bigint;
+  defaultContent: string;
+}) => {
+  const OPTIONS = {
+    DEFAULT: 'Default',
+    VS_CODE: 'VS Code',
+    RAW_CODE: 'Raw Code',
+  } as const;
 
-  const [isRaw, setIsRaw] = useState<boolean>(true);
+  const [transformType, setTransformType] = useState<
+    (typeof OPTIONS)[keyof typeof OPTIONS]
+  >(OPTIONS.RAW_CODE);
+
+  const transformedContent: string = (() => {
+    if (transformType === OPTIONS.RAW_CODE)
+      return StringModifier(defaultContent).removeDelimiters().get();
+
+    if (transformType === OPTIONS.VS_CODE)
+      return StringModifier(defaultContent).escapeQuotes().quoteLines().get();
+
+    return defaultContent;
+  })();
 
   return (
     <>
-      <textarea
-        style={{ height: '200px', width: '500px' }}
-        readOnly
-        value={isRaw ? rawContent : transformedContent ?? ''}
-      />
-      <input
-        onChange={() => {
-          setIsRaw(() => {
-            return !isRaw;
-          });
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '500px 1fr',
+          gridColumnGap: '10px',
         }}
-        type="checkbox"
-        id="isRaw"
-        name="isRaw"
-        value="snippet"
-      />
+      >
+        <div>
+          <textarea
+            style={{ height: '200px', width: '100%', resize: 'none' }}
+            readOnly
+            value={transformedContent ?? ''}
+          />
+        </div>
+        <div>
+          {Object.entries(OPTIONS).map(
+            (
+              [optionsKey, optionValue]: [
+                string,
+                (typeof OPTIONS)[keyof typeof OPTIONS],
+              ],
+              i: number,
+            ) => (
+              <div key={i}>
+                <input
+                  onChange={() => {
+                    setTransformType(() => {
+                      return optionValue;
+                    });
+                  }}
+                  defaultChecked={
+                    optionValue === OPTIONS.RAW_CODE ? true : false
+                  }
+                  type="radio"
+                  id={`transform-${snippetID}`}
+                  name={`transform-${snippetID}`}
+                />
+                <label htmlFor={`${optionsKey}`}>{optionValue}</label>
+              </div>
+            ),
+          )}
+        </div>
+      </div>
     </>
   );
 };

@@ -6,7 +6,7 @@ import { createLanguage } from '@/api-calls/language/create-language';
 import { readLanguage } from '@/api-calls/language/read-language';
 import Snippets from '@/components/Snippets';
 
-// const DEFAULT_TITLE: string = 'SnippetMaster';
+const DEFAULT_TITLE: string = 'SnippetMaster';
 
 const getLangFromURL = () => {
   if (typeof window === 'undefined') {
@@ -50,19 +50,20 @@ export default function Languages() {
       })
       .catch(() => {});
 
-    const handlePopState = () => {
-      // const language = getLangFromURL();
-      // if (language === '') {
-      //   document.title = DEFAULT_TITLE;
-      //   setCurrentLang('');
-      // }
-      // document.title = language ?? '';
-      // setCurrentLang(language);
+    const handTitleChange = () => {
+      const language = getLangFromURL();
+      if (language === '') {
+        document.title = DEFAULT_TITLE;
+        setCurrentLang('');
+      }
+      document.title = language ?? '';
+      setCurrentLang(language);
     };
-    handlePopState();
-    window.removeEventListener('popstate', handlePopState);
+    handTitleChange();
+
+    window.removeEventListener('popstate', handTitleChange);
     return () => {
-      window.addEventListener('popstate', handlePopState);
+      window.addEventListener('popstate', handTitleChange);
     };
   }, []);
 
