@@ -3,6 +3,7 @@
 import { SnippetDataType, readSnippet } from '@/api-calls/snippet/read-snippet';
 import { updateSnippet } from '@/api-calls/snippet/update-snippet';
 import { StringModifier } from '@/utils/StringModifier';
+import { snippet } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -56,6 +57,8 @@ const TextArea = ({
     RAW_CODE: 'Code',
   } as const;
 
+  const [defaultValue, setDefaultValue] = useState<string>(defaultContent);
+
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
   const [transformType, setTransformType] = useState<
@@ -64,15 +67,15 @@ const TextArea = ({
 
   const transformedContent: string = (() => {
     if (transformType === TRANSFORM_OPTIONS.RAW_CODE)
-      return StringModifier(defaultContent).removeDelimiters().get();
+      return StringModifier(defaultValue).removeDelimiters().get();
 
     if (transformType === TRANSFORM_OPTIONS.VS_CODE)
-      return StringModifier(defaultContent)
+      return StringModifier(defaultValue)
         .escapeQuotes()
         .convertToSnippetFormat()
         .get();
 
-    return defaultContent;
+    return defaultValue;
   })();
 
   return (
@@ -85,36 +88,66 @@ const TextArea = ({
         }}
       >
         <div>
-          <pre
-            contentEditable={isEditable}
-            onDoubleClick={() => {
-              setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
-              setIsEditable(() => true);
-            }}
-            onBlur={(e) => {
-              const updatedValue: string | null = e.target.textContent;
-              if (updatedValue !== defaultContent) {
-                const body = {
-                  snippet_id: snippetID,
-                  snippet_content: updatedValue,
-                };
-                updateSnippet(body)
-                  .then(() => {})
-                  .catch(() => {});
-              }
-              setIsEditable(() => false);
-            }}
-            style={{
-              height: '200px',
-              width: '100%',
-              border: '1px solid black',
-              margin: '0%',
-              padding: '5px',
-              cursor: isEditable ? 'text' : 'pointer',
-            }}
-          >
-            <code>{transformedContent}</code>
-          </pre>
+          {isEditable && (
+            <textarea
+              style={{
+                height: '200px',
+                width: '100%',
+                border: '1px solid black',
+                margin: '0%',
+                padding: '5px',
+                cursor: isEditable ? 'text' : 'pointer',
+              }}
+              onDoubleClick={() => {
+                setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
+                setIsEditable(() => true);
+              }}
+              onBlur={(e) => {
+                const updatedValue: string | null = e.target.value;
+                if (updatedValue !== defaultValue) {
+                  const body = {
+                    snippet_id: snippetID,
+                    snippet_content: updatedValue,
+                  };
+                  updateSnippet(body)
+                    .then(
+                      ({
+                        snippet_content,
+                      }: {
+                        snippet_content: snippet['snippet_content'];
+                      }) => {
+                        if (snippet_content) {
+                          setDefaultValue(snippet_content);
+                        }
+                      },
+                    )
+                    .catch(() => {});
+                }
+                setIsEditable(() => false);
+              }}
+              defaultValue={defaultValue}
+            />
+          )}
+
+          {!isEditable && (
+            <pre
+              contentEditable={isEditable}
+              onDoubleClick={() => {
+                setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
+                setIsEditable(() => true);
+              }}
+              style={{
+                height: '200px',
+                width: '100%',
+                border: '1px solid black',
+                margin: '0%',
+                padding: '5px',
+                cursor: isEditable ? 'text' : 'pointer',
+              }}
+            >
+              <code>{transformedContent}</code>
+            </pre>
+          )}
         </div>
         <div>
           {Object.entries(TRANSFORM_OPTIONS).map(
