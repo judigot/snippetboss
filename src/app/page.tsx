@@ -8,7 +8,6 @@ export default function Home() {
 
 // import {PrismaClient} from '@prisma/client';
 // import DatatypeParser from '@/utils/DataTypeParser';
-// import removeDelimiters from '@/helpers/removeDelimeters';
 
 // export default async function Home() {
 //   const prisma = new PrismaClient();

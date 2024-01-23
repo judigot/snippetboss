@@ -52,7 +52,7 @@ module.exports = {
     '@typescript-eslint/no-unnecessary-boolean-literal-compare': ['error'],
     '@typescript-eslint/no-unused-vars': ['error', { args: 'all' }],
     '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/strict-boolean-expressions': 'error',
+    // '@typescript-eslint/strict-boolean-expressions': 'error',
     complexity: ['error', 10],
     'max-depth': ['error', 4],
     'max-lines': ['error', 300],

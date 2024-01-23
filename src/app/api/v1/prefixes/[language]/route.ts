@@ -1,14 +1,15 @@
 import { prisma } from '@/prisma/DatabaseClient';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prefix, language } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 type prefixLanguage = prefix & language;
 
-export async function GET(
-  req: NextRequest,
-  { params: { language } }: { params: { language: string } },
-) {
+export async function GET({
+  params: { language },
+}: {
+  params: { language: string };
+}) {
   // prefixes?prefix=value
   const sql: string = /*sql*/ `
         -- SELECT s.*, l.*, p.*
