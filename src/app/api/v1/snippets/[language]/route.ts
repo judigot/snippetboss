@@ -20,7 +20,7 @@ export async function GET(
     WHERE l.lang_name = '${language}';
   `;
     const result: SnippetLanguage = await prisma.$queryRawUnsafe(sql);
-    return NextResponse.json<typeof result>(DatatypeParser(result));
+    return NextResponse.json<SnippetLanguage>(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {
