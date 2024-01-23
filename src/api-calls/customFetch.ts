@@ -128,4 +128,12 @@ export const customFetch = {
     const { url, body, options } = params;
     return customFetchInternal<T>(url, { ...options, method: 'POST', body });
   },
+  patch: async <T>(params: {
+    url: string;
+    body: DataBody;
+    options?: FetchOptions;
+  }): Promise<T> => {
+    const { url, body, options } = params;
+    return customFetchInternal<T>(url, { ...options, method: 'PATCH', body });
+  },
 };

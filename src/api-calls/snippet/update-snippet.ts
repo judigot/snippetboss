@@ -1,15 +1,13 @@
 import { customFetch } from '@/api-calls/customFetch';
 import { snippet } from '@prisma/client';
 
-export interface UpdateSnippetDataType
-  extends Pick<snippet, 'snippet_content'> {}
+interface Data extends Pick<snippet, 'snippet_id' | 'snippet_content'> {}
 
 export const updateSnippet = async (
-  snippet_id: bigint,
-  formData: UpdateSnippetDataType,
-): Promise<unknown> => {
-  const result: UpdateSnippetDataType | undefined = await customFetch.post({
-    url: `/snippets/${snippet_id}`,
+  formData: Data,
+): Promise<typeof formData | undefined> => {
+  const result: snippet = await customFetch.patch({
+    url: `/snippets`,
     body: JSON.stringify(formData),
   });
   return result;
