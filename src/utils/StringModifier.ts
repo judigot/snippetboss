@@ -12,6 +12,7 @@ export const StringModifier = (initialValue: string) => {
         result = result.replace(regex, '$1');
       }
 
+      // Replace escaped double quotes with regular double quotes
       result = result.replace(/\\"/g, '"');
 
       return builder;
@@ -19,8 +20,6 @@ export const StringModifier = (initialValue: string) => {
     escapeQuotes: () => {
       // Replace all double quotes with escaped double quotes
       result = result.replace(/"/g, '\\"');
-
-      // result = result.replace(/\\\\"/g, '"');
       return builder;
     },
     convertToSnippetFormat: () => {
@@ -43,7 +42,3 @@ export const StringModifier = (initialValue: string) => {
   };
   return builder;
 };
-
-console.log(
-  StringModifier('console.log(`%c${"Hello, World!"}`, "color: red")').get(),
-);

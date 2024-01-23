@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 import GetHandler from './Get';
 import PostHandler from './Post';
-// import PatchHandler from "./Patch";
+import PatchHandler from './Patch';
 // import PutHandler from "./Put";
 // import DeleteHandler from "./Delete";
 // import HeadHandler from "./Head";
@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   return PostHandler(req);
 }
-// export async function PATCH (req: NextRequest) {PatchHandler(req)};
+export async function PATCH(req: NextRequest) {
+  return PatchHandler(req);
+}
 // export async function PUT (req: NextRequest) {PutHandler(req)};
 // export async function DELETE (req: NextRequest) {DeleteHandler(req)};
 // export async function HEAD (req: NextRequest) {HeadHandler(req)};

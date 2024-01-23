@@ -36,9 +36,7 @@ export default function Languages() {
 
   const changeLanguage = (language: string) => {
     setURLParam(language);
-    setCurrentLang(() => {
-      return language;
-    });
+    setCurrentLang(() => language);
   };
 
   useEffect(() => {

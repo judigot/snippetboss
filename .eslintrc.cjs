@@ -44,9 +44,12 @@ module.exports = {
     ],
 
     //
+    'no-alert': ['error'],
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'arrow-body-style': ['error', 'as-needed'],
     'react/react-in-jsx-scope': 'off',
     // '@typescript-eslint/explicit-function-return-type': 'error',
+    '@typescript-eslint/no-unnecessary-boolean-literal-compare': ['error'],
     '@typescript-eslint/no-unused-vars': ['error'],
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/strict-boolean-expressions': 'error',

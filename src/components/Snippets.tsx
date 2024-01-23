@@ -1,6 +1,7 @@
 // 'use client';
 
 import { SnippetDataType, readSnippet } from '@/api-calls/snippet/read-snippet';
+import { updateSnippet } from '@/api-calls/snippet/update-snippet';
 import { StringModifier } from '@/utils/StringModifier';
 import { useEffect, useState } from 'react';
 
@@ -42,8 +43,6 @@ export default function Snippets({ language }: Props) {
   );
 }
 
-console.log(`%c${"Hello, World!"}`, "color: red")
-
 const TextArea = ({
   snippetID,
   defaultContent,
@@ -51,21 +50,23 @@ const TextArea = ({
   snippetID: bigint;
   defaultContent: string;
 }) => {
-  const OPTIONS = {
+  const TRANSFORM_OPTIONS = {
     DEFAULT: 'Default',
-    VS_CODE: 'VS Code',
-    RAW_CODE: 'Raw Code',
+    VS_CODE: 'VS Code Snippet',
+    RAW_CODE: 'Code',
   } as const;
 
+  const [isEditable, setIsEditable] = useState<boolean>(false);
+
   const [transformType, setTransformType] = useState<
-    (typeof OPTIONS)[keyof typeof OPTIONS]
-  >(OPTIONS.RAW_CODE);
+    (typeof TRANSFORM_OPTIONS)[keyof typeof TRANSFORM_OPTIONS]
+  >(TRANSFORM_OPTIONS.RAW_CODE);
 
   const transformedContent: string = (() => {
-    if (transformType === OPTIONS.RAW_CODE)
+    if (transformType === TRANSFORM_OPTIONS.RAW_CODE)
       return StringModifier(defaultContent).removeDelimiters().get();
 
-    if (transformType === OPTIONS.VS_CODE)
+    if (transformType === TRANSFORM_OPTIONS.VS_CODE)
       return StringModifier(defaultContent)
         .escapeQuotes()
         .convertToSnippetFormat()
@@ -85,39 +86,61 @@ const TextArea = ({
       >
         <div>
           <pre
-            // contentEditable={true}
+            contentEditable={isEditable}
+            onDoubleClick={() => {
+              setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
+              setIsEditable(() => true);
+            }}
+            onBlur={(e) => {
+              const updatedValue: string | null = e.target.textContent;
+              if (updatedValue !== defaultContent) {
+                const body = {
+                  snippet_content: updatedValue,
+                };
+                updateSnippet(snippetID, body)
+                  .then((result) => {
+                    if (result) {
+                      /* prettier-ignore */ (() => { const QuickLog = result; const parentDiv = document.getElementById('quicklogContainer') || (() => {const div = document.createElement('div');div.id = 'quicklogContainer';div.style.cssText = 'position: fixed; top: 10px; left: 10px; z-index: 1000;';document.body.appendChild(div);return div; })(); const createChildDiv = (text) => {const newDiv = Object.assign(document.createElement('div'), { textContent: text, style: 'font: bold 25px "Comic Sans MS"; width: max-content; max-width: 500px; word-wrap: break-word; background-color: rgb(255, 240, 0); box-shadow: white 0px 0px 5px 1px; padding: 5px; border: 3px solid black; border-radius: 10px; color: black !important; cursor: pointer;',});const handleMouseDown = (event) => { event.preventDefault(); const clickedDiv = event.target instanceof Element && event.target.closest('div');if (clickedDiv && event.button === 0 && clickedDiv === newDiv) { const textArea = document.createElement('textarea'); textArea.value = clickedDiv.textContent || ''; document.body.appendChild(textArea); textArea.select(); document.execCommand('copy'); document.body.removeChild(textArea);clickedDiv.style.backgroundColor = 'green'; setTimeout(() => { clickedDiv.style.backgroundColor = 'rgb(255, 240, 0)'; }, 1000); }};const handleDoubleClick = () => { if (parentDiv.contains(newDiv)) { parentDiv.removeChild(newDiv); }};newDiv.addEventListener('mousedown', handleMouseDown);newDiv.addEventListener('dblclick', handleDoubleClick);return newDiv; };parentDiv.prepend(createChildDiv(QuickLog)); })()
+                    }
+                  })
+                  .catch(() => {});
+              }
+              setIsEditable(() => false);
+            }}
             style={{
               height: '200px',
               width: '100%',
               border: '1px solid black',
               margin: '0%',
+              padding: '5px',
+              cursor: isEditable ? 'text' : 'pointer',
             }}
           >
             <code>{transformedContent}</code>
           </pre>
         </div>
         <div>
-          {Object.entries(OPTIONS).map(
+          {Object.entries(TRANSFORM_OPTIONS).map(
             (
-              [optionsKey, optionValue]: [
+              [transformOptionKey, transformOptionValue]: [
                 string,
-                (typeof OPTIONS)[keyof typeof OPTIONS],
+                (typeof TRANSFORM_OPTIONS)[keyof typeof TRANSFORM_OPTIONS],
               ],
               i: number,
             ) => (
               <div key={i}>
                 <input
+                  checked={transformType === transformOptionValue}
                   onChange={() => {
-                    setTransformType(() => optionValue);
+                    setTransformType(() => transformOptionValue);
                   }}
-                  defaultChecked={
-                    optionValue === OPTIONS.RAW_CODE ? true : false
-                  }
                   type="radio"
                   id={`transform-${snippetID}`}
                   name={`transform-${snippetID}`}
                 />
-                <label htmlFor={`${optionsKey}`}>{optionValue}</label>
+                <label htmlFor={`${transformOptionKey}`}>
+                  {transformOptionValue}
+                </label>
               </div>
             ),
           )}
