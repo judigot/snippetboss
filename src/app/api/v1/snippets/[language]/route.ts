@@ -10,7 +10,6 @@ export async function GET(
   { params: { language } }: { params: { language: string } },
 ) {
   try {
-    // snippets?snippet=value
     const sql: string = /*sql*/ `
     SELECT s.*, l.*, p.*
     FROM snippet s
