@@ -44,6 +44,7 @@ module.exports = {
     ],
 
     //
+    'arrow-body-style': ['error', 'as-needed'],
     'react/react-in-jsx-scope': 'off',
     // '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/no-unused-vars': ['error'],

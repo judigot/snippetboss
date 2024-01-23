@@ -12,21 +12,38 @@ export const StringModifier = (initialValue: string) => {
         result = result.replace(regex, '$1');
       }
 
-      return builder;
-    },
-    quoteLines: () => {
-      // Split the result into lines, then quote each line and join them back
-      result = result
-        .split('\n')
-        .map((line) => `"${line}",`)
-        .join('\n');
+      result = result.replace(/\\"/g, '"');
+
       return builder;
     },
     escapeQuotes: () => {
       // Replace all double quotes with escaped double quotes
       result = result.replace(/"/g, '\\"');
+
+      // result = result.replace(/\\\\"/g, '"');
+      return builder;
+    },
+    convertToSnippetFormat: () => {
+      result = result
+        .split('\n')
+        .map((line, i) => {
+          const lineCount = result.split('\n').length;
+          let lineBuilder: string = line;
+          const isLastLine: boolean = i + 1 === lineCount;
+          lineBuilder = `"${line}"`;
+          if (!isLastLine) {
+            lineBuilder = `${lineBuilder},\n`;
+          }
+          return `${lineBuilder}`;
+        })
+        .join('');
+      result = `[\n${result}\n]`;
       return builder;
     },
   };
   return builder;
 };
+
+console.log(
+  StringModifier('console.log(`%c${"Hello, World!"}`, "color: red")').get(),
+);

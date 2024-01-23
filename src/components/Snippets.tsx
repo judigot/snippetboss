@@ -42,6 +42,8 @@ export default function Snippets({ language }: Props) {
   );
 }
 
+console.log(`%c${"Hello, World!"}`, "color: red")
+
 const TextArea = ({
   snippetID,
   defaultContent,
@@ -64,7 +66,10 @@ const TextArea = ({
       return StringModifier(defaultContent).removeDelimiters().get();
 
     if (transformType === OPTIONS.VS_CODE)
-      return StringModifier(defaultContent).escapeQuotes().quoteLines().get();
+      return StringModifier(defaultContent)
+        .escapeQuotes()
+        .convertToSnippetFormat()
+        .get();
 
     return defaultContent;
   })();
@@ -74,16 +79,22 @@ const TextArea = ({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '500px 1fr',
+          gridTemplateColumns: '1fr 1fr',
           gridColumnGap: '10px',
         }}
       >
         <div>
-          <textarea
-            style={{ height: '200px', width: '100%', resize: 'none' }}
-            readOnly
-            value={transformedContent ?? ''}
-          />
+          <pre
+            // contentEditable={true}
+            style={{
+              height: '200px',
+              width: '100%',
+              border: '1px solid black',
+              margin: '0%',
+            }}
+          >
+            <code>{transformedContent}</code>
+          </pre>
         </div>
         <div>
           {Object.entries(OPTIONS).map(
@@ -97,9 +108,7 @@ const TextArea = ({
               <div key={i}>
                 <input
                   onChange={() => {
-                    setTransformType(() => {
-                      return optionValue;
-                    });
+                    setTransformType(() => optionValue);
                   }}
                   defaultChecked={
                     optionValue === OPTIONS.RAW_CODE ? true : false
