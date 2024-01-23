@@ -50,7 +50,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     // '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/no-unnecessary-boolean-literal-compare': ['error'],
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': ['error', { args: 'all' }],
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/strict-boolean-expressions': 'error',
     complexity: ['error', 10],
