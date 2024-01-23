@@ -99,10 +99,7 @@ const TextArea = ({
                   snippet_content: updatedValue,
                 };
                 updateSnippet(body)
-                  // .then((result) => {
-                  //   if (result) {
-                  //   }
-                  // })
+                  .then(() => {})
                   .catch(() => {});
               }
               setIsEditable(() => false);

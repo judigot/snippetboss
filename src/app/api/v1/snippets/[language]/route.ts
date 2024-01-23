@@ -1,12 +1,12 @@
 import { prisma } from '@/prisma/DatabaseClient';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { snippet, language, prefix } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 type SnippetLanguage = snippet & language & prefix;
 
 export async function GET(
-  // req: NextRequest,
+  _req: NextRequest,
   { params: { language } }: { params: { language: string } },
 ) {
   try {
