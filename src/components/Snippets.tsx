@@ -21,17 +21,21 @@ export default function Snippets({ language }: Props) {
   }, [language]);
 
   return (
-    <div>
+    <>
       {snippets && (
         <>
           {snippets?.map(({ snippet_id, snippet_content, prefix_name }) => (
             <div key={snippet_id}>
               <h1>{prefix_name}</h1>
-              <textarea style={{height: "200px", width: "500px"}} readOnly value={snippet_content ?? ''} />
+              <textarea
+                style={{ height: '200px', width: '500px' }}
+                readOnly
+                value={snippet_content ?? ''}
+              />
             </div>
           ))}
         </>
       )}
-    </div>
+    </>
   );
 }

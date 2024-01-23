@@ -17,7 +17,7 @@ const getLangFromURL = () => {
   return language;
 };
 
-export default function Home() {
+export default function Languages() {
   const [languages, setLanguages] = useState<language[] | null>([]);
 
   const [currentLang, setCurrentLang] = useState<string | null>(
@@ -82,7 +82,7 @@ export default function Home() {
       {!languages && <span>No languages</span>}
       <AddLanguageComponent />
       {currentLang !== null && currentLang !== '' && (
-        <Snippets language={currentLang}></Snippets>
+        <Snippets language={currentLang} />
       )}
     </>
   );
