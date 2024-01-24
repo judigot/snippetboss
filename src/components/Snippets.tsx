@@ -110,7 +110,7 @@ const TextArea = ({
           gridColumnGap: '10px',
         }}
       >
-        <div role="textbox" tabIndex={-1}>
+        <div>
           {isEditable && (
             <textarea
               onBlur={(e) => {
