@@ -1,5 +1,7 @@
 // 'use client';
 
+import "@/styles/global.css"
+
 import Languages from '@/components/Languages';
 
 export default function Home() {
