@@ -4,7 +4,7 @@ import { SnippetDataType, readSnippet } from '@/api-calls/snippet/read-snippet';
 import { updateSnippet } from '@/api-calls/snippet/update-snippet';
 import { StringModifier } from '@/utils/StringModifier';
 import { snippet } from '@prisma/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   language: string;
@@ -101,6 +101,8 @@ const TextArea = ({
     setIsEditable(() => false);
   };
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   return (
     <>
       <div
@@ -113,6 +115,7 @@ const TextArea = ({
         <div>
           {isEditable && (
             <textarea
+              ref={textAreaRef}
               onBlur={(e) => {
                 const updatedValue: string = e.currentTarget.value;
                 handleUpdate(updatedValue);
@@ -140,6 +143,13 @@ const TextArea = ({
               onDoubleClick={() => {
                 setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
                 setIsEditable(() => true);
+                setTimeout(() => {
+                  textAreaRef.current?.focus();
+                  const length = textAreaRef.current?.value.length;
+                  if (length) {
+                    textAreaRef.current?.setSelectionRange(length, length);
+                  }
+                });
               }}
               style={{
                 height: '200px',
