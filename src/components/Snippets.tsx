@@ -78,6 +78,29 @@ const TextArea = ({
     return defaultValue;
   })();
 
+  const handleUpdate = (newValue: string) => {
+    if (newValue !== defaultValue) {
+      const body = {
+        snippet_id: snippetID,
+        snippet_content: newValue,
+      };
+      updateSnippet(body)
+        .then(
+          ({
+            snippet_content,
+          }: {
+            snippet_content: snippet['snippet_content'];
+          }) => {
+            if (snippet_content) {
+              setDefaultValue(snippet_content);
+            }
+          },
+        )
+        .catch(() => {});
+    }
+    setIsEditable(() => false);
+  };
+
   return (
     <>
       <div
@@ -87,9 +110,19 @@ const TextArea = ({
           gridColumnGap: '10px',
         }}
       >
-        <div>
+        <div role="textbox" tabIndex={-1}>
           {isEditable && (
             <textarea
+              onBlur={(e) => {
+                const updatedValue: string = e.currentTarget.value;
+                handleUpdate(updatedValue);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+                  const updatedValue: string = event.currentTarget.value;
+                  handleUpdate(updatedValue);
+                }
+              }}
               style={{
                 height: '200px',
                 width: '100%',
@@ -97,33 +130,6 @@ const TextArea = ({
                 margin: '0%',
                 padding: '5px',
                 cursor: isEditable ? 'text' : 'pointer',
-              }}
-              onDoubleClick={() => {
-                setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
-                setIsEditable(() => true);
-              }}
-              onBlur={(e) => {
-                const updatedValue: string | null = e.target.value;
-                if (updatedValue !== defaultValue) {
-                  const body = {
-                    snippet_id: snippetID,
-                    snippet_content: updatedValue,
-                  };
-                  updateSnippet(body)
-                    .then(
-                      ({
-                        snippet_content,
-                      }: {
-                        snippet_content: snippet['snippet_content'];
-                      }) => {
-                        if (snippet_content) {
-                          setDefaultValue(snippet_content);
-                        }
-                      },
-                    )
-                    .catch(() => {});
-                }
-                setIsEditable(() => false);
               }}
               defaultValue={defaultValue}
             />
@@ -131,7 +137,6 @@ const TextArea = ({
 
           {!isEditable && (
             <pre
-              contentEditable={isEditable}
               onDoubleClick={() => {
                 setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
                 setIsEditable(() => true);
@@ -144,6 +149,7 @@ const TextArea = ({
                 padding: '5px',
                 cursor: isEditable ? 'text' : 'pointer',
               }}
+              contentEditable={isEditable}
             >
               <code>{transformedContent}</code>
             </pre>
