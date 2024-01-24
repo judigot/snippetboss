@@ -166,6 +166,7 @@ const TextArea = ({
             </pre>
           )}
         </div>
+
         <div>
           {Object.entries(TRANSFORM_OPTIONS).map(
             (
@@ -177,15 +178,19 @@ const TextArea = ({
             ) => (
               <div key={i}>
                 <input
+                  style={{ cursor: 'pointer' }}
                   checked={transformType === transformOptionValue}
                   onChange={() => {
                     setTransformType(() => transformOptionValue);
                   }}
                   type="radio"
-                  id={`transform-${snippetID}`}
-                  name={`transform-${snippetID}`}
+                  id={`${transformOptionKey}-${snippetID}`}
+                  name={`transformer`}
                 />
-                <label htmlFor={`${transformOptionKey}`}>
+                <label
+                  style={{ cursor: 'pointer' }}
+                  htmlFor={`${transformOptionKey}-${snippetID}`}
+                >
                   {transformOptionValue}
                 </label>
               </div>
