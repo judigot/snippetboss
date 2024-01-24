@@ -196,6 +196,19 @@ const TextArea = ({
               </div>
             ),
           )}
+          <button
+            onClick={() => {
+              (async () => {
+                try {
+                  await navigator.clipboard.writeText(transformedContent);
+                } catch (error) {
+                  console.error('Failed to copy text to clipboard:', error);
+                }
+              })().catch(() => {});
+            }}
+          >
+            Copy to Clipboard
+          </button>
         </div>
       </div>
     </>
