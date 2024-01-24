@@ -133,6 +133,7 @@ const TextArea = ({
                 margin: '0%',
                 padding: '5px',
                 cursor: isEditable ? 'text' : 'pointer',
+                resize: 'none',
               }}
               defaultValue={defaultValue}
             />
