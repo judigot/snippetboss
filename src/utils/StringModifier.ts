@@ -29,7 +29,7 @@ export const StringModifier = (initialValue: string) => {
           const lineCount = result.split('\n').length;
           let lineBuilder: string = line;
           const isLastLine: boolean = i + 1 === lineCount;
-          lineBuilder = `"${line}"`;
+          lineBuilder = `  "${line}"`;
           if (!isLastLine) {
             lineBuilder = `${lineBuilder},\n`;
           }
