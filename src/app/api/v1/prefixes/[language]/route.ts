@@ -3,7 +3,7 @@ import DatatypeParser from '@/utils/DataTypeParser';
 import { prefix, language } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
-type prefixLanguage = prefix & language;
+type PrefixLanguageIntersection = prefix & language;
 
 export async function GET({
   params: { language },
@@ -32,7 +32,7 @@ export async function GET({
         GROUP BY
           p.prefix_id;
     `;
-  const result: prefixLanguage = await prisma.$queryRawUnsafe(sql);
+  const result: PrefixLanguageIntersection = await prisma.$queryRawUnsafe(sql);
   // const result = await prisma.prefix.findMany({});
   return NextResponse.json<typeof result>(DatatypeParser(result));
 }

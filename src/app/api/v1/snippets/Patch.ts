@@ -3,15 +3,15 @@ import { prisma } from '@/prisma/DatabaseClient';
 import { snippet } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 
-interface BodyInterface
+interface Body
   extends Pick<snippet, 'snippet_id' | 'snippet_content'> {}
 
-interface ResponseInterface extends snippet {}
+interface Response extends snippet {}
 
 const PatchHandler = async (req: NextRequest) => {
   try {
-    const { snippet_id, snippet_content } = (await req.json()) as BodyInterface;
-    const result: ResponseInterface = await prisma.snippet.update({
+    const { snippet_id, snippet_content } = (await req.json()) as Body;
+    const result: Response = await prisma.snippet.update({
       where: {
         snippet_id,
       },
@@ -19,7 +19,7 @@ const PatchHandler = async (req: NextRequest) => {
         snippet_content,
       },
     });
-    return NextResponse.json<ResponseInterface>(DatatypeParser(result), {
+    return NextResponse.json<Response>(DatatypeParser(result), {
       status: 200,
     });
   } catch (error) {

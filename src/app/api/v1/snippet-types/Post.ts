@@ -3,11 +3,11 @@ import { prisma } from '@/prisma/DatabaseClient';
 import { snippet_type } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 
-interface Data extends Omit<snippet_type, 'snippet_type_id'> {}
+interface Body extends Omit<snippet_type, 'snippet_type_id'> {}
 
 const PostHandler = async (req: NextRequest) => {
   try {
-    const body = (await req.json()) as Data;
+    const body = (await req.json()) as Body;
     const result = await prisma.snippet_type.create({
       data: body,
     });

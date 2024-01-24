@@ -3,7 +3,7 @@ import { snippet } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
-interface ResponseInterface extends snippet {}
+interface Response extends snippet {}
 
 const GetHandler = async (req: NextRequest) => {
   try {
@@ -14,7 +14,7 @@ const GetHandler = async (req: NextRequest) => {
     }
     // snippets?language=value
     const result = await prisma.snippet.findMany();
-    return NextResponse.json<ResponseInterface[]>(DatatypeParser(result));
+    return NextResponse.json<Response[]>(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {

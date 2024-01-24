@@ -3,11 +3,11 @@ import { prisma } from '@/prisma/DatabaseClient';
 import { prefix } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 
-interface Data extends Omit<prefix, 'prefix_id'> {}
+interface Body extends Omit<prefix, 'prefix_id'> {}
 
 const PostHandler = async (req: NextRequest) => {
   try {
-    const body = (await req.json()) as Data;
+    const body = (await req.json()) as Body;
     const result = await prisma.prefix.create({
       data: body,
     });

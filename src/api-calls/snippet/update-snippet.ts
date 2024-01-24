@@ -1,15 +1,15 @@
 import { customFetch } from '@/api-calls/customFetch';
 import { snippet } from '@prisma/client';
 
-interface BodyInterface
+interface Body
   extends Pick<snippet, 'snippet_id' | 'snippet_content'> {}
 
-interface ResponseInterface extends snippet {}
+interface Response extends snippet {}
 
 export const updateSnippet = async (
-  formData: BodyInterface,
-): Promise<ResponseInterface> => {
-  const result: ResponseInterface = await customFetch.patch({
+  formData: Body,
+): Promise<Response> => {
+  const result: Response = await customFetch.patch({
     url: `/snippets`,
     body: JSON.stringify(formData),
   });

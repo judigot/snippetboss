@@ -3,7 +3,7 @@ import { prefix } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
-interface Data extends prefix {}
+interface Response extends prefix {}
 
 const GetHandler = async (req: NextRequest) => {
   try {
@@ -15,7 +15,7 @@ const GetHandler = async (req: NextRequest) => {
 
     // prefixes?language=value
     const result = await prisma.prefix.findMany();
-    return NextResponse.json<Data[]>(DatatypeParser(result));
+    return NextResponse.json<Response[]>(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {

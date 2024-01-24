@@ -8,8 +8,8 @@ import PostHandler from './Post';
 // import HeadHandler from "./Head";
 // import OptionsHandler from "./Options";
 
-export async function GET() {
-  return GetHandler();
+export async function GET(req: NextRequest) {
+  return GetHandler(req);
 }
 export async function POST(req: NextRequest) {
   return PostHandler(req);

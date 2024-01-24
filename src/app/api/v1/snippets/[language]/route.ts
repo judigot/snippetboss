@@ -3,7 +3,7 @@ import DatatypeParser from '@/utils/DataTypeParser';
 import { snippet, language, prefix } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
-type SnippetLanguage = snippet & language & prefix;
+type Response = snippet & language & prefix;
 
 export async function GET(
   _req: NextRequest,
@@ -18,8 +18,8 @@ export async function GET(
     JOIN prefix p ON s.prefix_id = p.prefix_id
     WHERE l.lang_name = '${language}';
   `;
-    const result: SnippetLanguage = await prisma.$queryRawUnsafe(sql);
-    return NextResponse.json<SnippetLanguage>(DatatypeParser(result));
+    const result: Response = await prisma.$queryRawUnsafe(sql);
+    return NextResponse.json<Response>(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {
