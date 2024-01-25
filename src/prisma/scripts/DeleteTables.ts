@@ -4,11 +4,14 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
-    const sql: string = /*sql*/ `
+    let sql: string = /*sql*/ `
       DROP SCHEMA public CASCADE;
+    `;
+    await prisma.$queryRawUnsafe(sql);
+
+    sql = /*sql*/ `
       CREATE SCHEMA public;
     `;
-
     await prisma.$queryRawUnsafe(sql);
   } catch (error) {
     console.error(error);
