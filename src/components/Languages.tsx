@@ -67,19 +67,23 @@ export default function Languages() {
 
   return (
     <>
-      {languages &&
-        languages?.map(({ language_id, display_name, language_name }) => (
-          <button
-            key={language_id}
-            onClick={() => {
-              changeLanguage(language_name);
-            }}
-          >
-            {display_name !== '' ? display_name : language_name}
-          </button>
-        ))}
-      {!languages && <span>No languages</span>}
-      <AddLanguageComponent />
+      <section style={{ textAlign: 'center' }}>
+        <h1>Languages</h1>
+        {languages &&
+          languages?.map(({ language_id, display_name, language_name }) => (
+            <button
+              key={language_id}
+              onClick={() => {
+                changeLanguage(language_name);
+              }}
+            >
+              {display_name !== '' ? display_name : language_name}
+            </button>
+          ))}
+        {!languages && <span>No languages</span>}
+        <AddLanguageComponent />
+      </section>
+      <hr />
       {currentLang !== null && currentLang !== '' && (
         <Snippets language={currentLang} />
       )}
@@ -128,30 +132,32 @@ export function AddLanguageComponent() {
       </button>
 
       {isFormVisible && (
-        <form
-          style={{ display: 'inline-block' }}
-          onSubmit={(e) => {
-            handleSubmit(e);
-          }}
-        >
-          <label htmlFor="language_name">Programming Language</label>
-          <input
-            required
-            type="text"
-            name="language_name"
-            onChange={handleInputChange}
-          />
+        <section>
+          <form
+            style={{ display: 'inline-block' }}
+            onSubmit={(e) => {
+              handleSubmit(e);
+            }}
+          >
+            <label htmlFor="language_name">Programming Language</label>
+            <input
+              required
+              type="text"
+              name="language_name"
+              onChange={handleInputChange}
+            />
 
-          <label htmlFor="display_name">Display Name</label>
-          <input
-            // required
-            type="text"
-            name="display_name"
-            onChange={handleInputChange}
-          />
+            <label htmlFor="display_name">Display Name</label>
+            <input
+              // required
+              type="text"
+              name="display_name"
+              onChange={handleInputChange}
+            />
 
-          <button type="submit">Submit</button>
-        </form>
+            <button type="submit">Submit</button>
+          </form>
+        </section>
       )}
     </>
   );
