@@ -27,14 +27,11 @@ export default function Snippets({ language }: Props) {
     <>
       {snippets && (
         <>
-          {snippets?.map(({ snippet_id, snippet_content, prefix_name }) => (
-            <div key={snippet_id}>
-              <h1>{prefix_name}</h1>
-              {snippet_content !== null && (
-                <TextArea
-                  snippetID={snippet_id}
-                  defaultContent={snippet_content}
-                />
+          {snippets?.map((snippet) => (
+            <div key={snippet.snippet_id}>
+              <h1>{snippet.prefix_name}</h1>
+              {snippet.snippet_content !== null && (
+                <TextArea snippet={snippet} />
               )}
             </div>
           ))}
@@ -45,11 +42,9 @@ export default function Snippets({ language }: Props) {
 }
 
 const TextArea = ({
-  snippetID,
-  defaultContent,
+  snippet: { snippet_id, snippet_content },
 }: {
-  snippetID: bigint;
-  defaultContent: string;
+  snippet: SnippetDataType;
 }) => {
   const TRANSFORM_OPTIONS = {
     DEFAULT: 'Default',
@@ -57,9 +52,11 @@ const TextArea = ({
     RAW_CODE: 'Code',
   } as const;
 
-  const [defaultValue, setDefaultValue] = useState<string>(defaultContent);
+  const [defaultValue, setDefaultValue] = useState<string>(
+    snippet_content ?? '',
+  );
 
-  const [isEditable, setIsEditable] = useState<boolean>(false);
+  const [isBeingEdited, setIsBeingEdited] = useState<boolean>(false);
 
   const [transformType, setTransformType] = useState<
     (typeof TRANSFORM_OPTIONS)[keyof typeof TRANSFORM_OPTIONS]
@@ -81,7 +78,7 @@ const TextArea = ({
   const handleUpdate = (newValue: string) => {
     if (newValue !== defaultValue) {
       const body = {
-        snippet_id: snippetID,
+        snippet_id: snippet_id,
         snippet_content: newValue,
       };
       updateSnippet(body)
@@ -98,10 +95,22 @@ const TextArea = ({
         )
         .catch(() => {});
     }
-    setIsEditable(() => false);
+    setIsBeingEdited(() => false);
   };
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const snippetStyling: React.CSSProperties = {
+    color: 'lightgreen',
+    fontSize: '15px',
+    fontWeight: 'bold',
+    height: '200px',
+    width: '100%',
+    border: '1px solid black',
+    margin: '0%',
+    padding: '5px',
+    cursor: isBeingEdited ? 'text' : 'pointer',
+  };
 
   return (
     <>
@@ -113,7 +122,7 @@ const TextArea = ({
         }}
       >
         <div>
-          {isEditable && (
+          {isBeingEdited && (
             <textarea
               ref={textAreaRef}
               onBlur={(e) => {
@@ -127,23 +136,20 @@ const TextArea = ({
                 }
               }}
               style={{
-                height: '200px',
-                width: '100%',
-                border: '1px solid black',
-                margin: '0%',
-                padding: '5px',
-                cursor: isEditable ? 'text' : 'pointer',
-                resize: 'none',
+                ...snippetStyling,
+                ...{
+                  resize: 'none',
+                },
               }}
               defaultValue={defaultValue}
             />
           )}
 
-          {!isEditable && (
+          {!isBeingEdited && (
             <pre
               onDoubleClick={() => {
                 setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
-                setIsEditable(() => true);
+                setIsBeingEdited(() => true);
                 setTimeout(() => {
                   textAreaRef.current?.focus();
                   const length = textAreaRef.current?.value.length;
@@ -152,15 +158,8 @@ const TextArea = ({
                   }
                 });
               }}
-              style={{
-                height: '200px',
-                width: '100%',
-                border: '1px solid black',
-                margin: '0%',
-                padding: '5px',
-                cursor: isEditable ? 'text' : 'pointer',
-              }}
-              contentEditable={isEditable}
+              style={snippetStyling}
+              contentEditable={isBeingEdited}
             >
               <code>{transformedContent}</code>
             </pre>
@@ -184,12 +183,12 @@ const TextArea = ({
                     setTransformType(() => transformOptionValue);
                   }}
                   type="radio"
-                  id={`${transformOptionKey}-${snippetID}`}
+                  id={`${transformOptionKey}-${snippet_id}`}
                   name={`transformer`}
                 />
                 <label
                   style={{ cursor: 'pointer' }}
-                  htmlFor={`${transformOptionKey}-${snippetID}`}
+                  htmlFor={`${transformOptionKey}-${snippet_id}`}
                 >
                   {transformOptionValue}
                 </label>
