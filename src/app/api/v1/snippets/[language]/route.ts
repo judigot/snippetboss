@@ -32,7 +32,8 @@ export async function GET(
     FROM snippet
     JOIN prefix ON snippet.prefix_id = prefix.prefix_id
     LEFT JOIN snippet_language ON snippet.snippet_id = snippet_language.snippet_id
-    LEFT JOIN language ON snippet_language.language_id = language.language_id AND language.language_name = '${language}'
+    LEFT JOIN language ON snippet_language.language_id = language.language_id
+    WHERE language.language_name = '${language}'
     GROUP BY snippet.snippet_id, prefix.prefix_id;
   `;
     const result: SnippetResponseType[] = await prisma.$queryRawUnsafe(sql);
