@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "fresh-db": "pnpm dotenv -e .env.local -- pnpm run delete-tables && pnpm dotenv -e .env.local -- pnpm run prisma-push-schema",
+    "fresh-db-with-data": "pnpm dotenv -e .env.local -- pnpm run delete-tables && pnpm dotenv -e .env.local -- pnpm run prisma-push-schema && pnpm dotenv -e .env.local -- pnpm run seed",
     "seed": "pnpm dotenv -e .env.local -- pnpm prisma db seed",
     "delete-tables": "pnpm dotenv -e .env.local -- ts-node --compilerOptions \"{\\\"module\\\":\\\"CommonJS\\\"}\" ./src/prisma/scripts/DeleteTables.ts",
     "prisma-push-schema": "pnpm dotenv -e .env.local -- pnpm prisma db push && pnpm prisma generate",
