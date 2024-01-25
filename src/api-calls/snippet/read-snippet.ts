@@ -1,13 +1,12 @@
 import { customFetch } from '@/api-calls/customFetch';
-import { language, prefix, snippet } from '@prisma/client';
-
-export type SnippetDataType = snippet & language & prefix;
+import { SnippetResponseType } from '@/app/api/v1/snippets/[language]/route';
 
 export const readSnippet = async (
   language: string,
-): Promise<SnippetDataType[] | null> => {
-  const result: SnippetDataType[] | null = await customFetch.get({
+): Promise<SnippetResponseType[] | null> => {
+  const result: SnippetResponseType[] | null = await customFetch.get({
     url: `/snippets/${language}`,
   });
+
   return result;
 };

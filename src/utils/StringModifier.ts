@@ -1,4 +1,4 @@
-import { SnippetDataType } from '@/api-calls/snippet/read-snippet';
+import { SnippetResponseType } from '@/app/api/v1/snippets/[language]/route';
 
 export const StringModifier = (initialValue: string) => {
   let result: string = initialValue;
@@ -26,9 +26,8 @@ export const StringModifier = (initialValue: string) => {
     },
     convertToSnippetFormat: ({
       prefix_name,
-      display_name,
-      lang_name,
-    }: SnippetDataType) => {
+      languages,
+    }: SnippetResponseType) => {
       result = result
         .split('\n')
         .map((line, i) => {
@@ -42,11 +41,10 @@ export const StringModifier = (initialValue: string) => {
           return `${lineBuilder}`;
         })
         .join('');
-      result =
-`"Print to console (${display_name})": {
+      result = `"Print to console (${languages.map(({ display_name }) => display_name).join('/')})": {
   "prefix": "${prefix_name}",
   "body": [\n${result}\n  ],
-  "scope": "${lang_name}"
+  "scope": "${languages.map(({ lang_name }) => lang_name).join(', ')}"
 },`;
       return builder;
     },

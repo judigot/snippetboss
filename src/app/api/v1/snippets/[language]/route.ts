@@ -3,7 +3,10 @@ import DatatypeParser from '@/utils/DataTypeParser';
 import { snippet, language, prefix } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
-type Response = snippet & language & prefix;
+export type SnippetResponseType = snippet &
+  prefix & {
+    languages: language[];
+  };
 
 export async function GET(
   _req: NextRequest,
@@ -13,6 +16,7 @@ export async function GET(
     const sql: string = /*sql*/ `
     SELECT 
         snippet.*,
+        prefix.*,
         (
             SELECT json_agg(
                 json_build_object(
@@ -24,16 +28,15 @@ export async function GET(
             FROM snippet_language
             JOIN language ON snippet_language.language_id = language.lang_id
             WHERE snippet_language.snippet_id = snippet.snippet_id
-        ) AS languages,
-        prefix.*
+        ) AS languages
     FROM snippet
     JOIN prefix ON snippet.prefix_id = prefix.prefix_id
     LEFT JOIN snippet_language ON snippet.snippet_id = snippet_language.snippet_id
     LEFT JOIN language ON snippet_language.language_id = language.lang_id AND language.lang_name = '${language}'
     GROUP BY snippet.snippet_id, prefix.prefix_id;
   `;
-    const result: Response = await prisma.$queryRawUnsafe(sql);
-    return NextResponse.json<Response>(DatatypeParser(result));
+    const result: SnippetResponseType[] = await prisma.$queryRawUnsafe(sql);
+    return NextResponse.json<SnippetResponseType[]>(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {

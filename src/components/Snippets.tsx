@@ -1,7 +1,8 @@
 // 'use client';
 
-import { SnippetDataType, readSnippet } from '@/api-calls/snippet/read-snippet';
+import { readSnippet } from '@/api-calls/snippet/read-snippet';
 import { updateSnippet } from '@/api-calls/snippet/update-snippet';
+import { SnippetResponseType } from '@/app/api/v1/snippets/[language]/route';
 import { StringModifier } from '@/utils/StringModifier';
 import { snippet } from '@prisma/client';
 import { useEffect, useRef, useState } from 'react';
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export default function Snippets({ language }: Props) {
-  const [snippets, setSnippets] = useState<SnippetDataType[] | null>([]);
+  const [snippets, setSnippets] = useState<SnippetResponseType[] | null>([]);
 
   useEffect(() => {
     readSnippet(language)
@@ -41,7 +42,7 @@ export default function Snippets({ language }: Props) {
   );
 }
 
-const TextArea = ({ snippet }: { snippet: SnippetDataType }) => {
+const TextArea = ({ snippet }: { snippet: SnippetResponseType }) => {
   const TRANSFORM_OPTIONS = {
     DEFAULT: 'Default',
     VS_CODE: 'VS Code Snippet',
@@ -104,8 +105,9 @@ const TextArea = ({ snippet }: { snippet: SnippetDataType }) => {
     fontSize: '15px',
     fontWeight: 'bold',
     height: '200px',
+    overflowY: 'scroll',
     width: '100%',
-    border: '1px solid black',
+    border: '1px solid gray',
     margin: '0%',
     padding: '5px',
     cursor: isBeingEdited ? 'text' : 'pointer',
@@ -116,9 +118,9 @@ const TextArea = ({ snippet }: { snippet: SnippetDataType }) => {
       <div
         style={{
           display: 'grid',
-          gap: '20px',
+          gap: '50px',
           gridTemplateColumns: '1fr 1fr',
-          gridColumnGap: '10px',
+          gridColumnGap: '50px',
         }}
       >
         <div>
@@ -166,7 +168,7 @@ const TextArea = ({ snippet }: { snippet: SnippetDataType }) => {
           )}
         </div>
 
-        <div>
+        <div style={{ zoom: '150%' }}>
           {Object.entries(TRANSFORM_OPTIONS).map(
             (
               [transformOptionKey, transformOptionValue]: [
@@ -184,7 +186,7 @@ const TextArea = ({ snippet }: { snippet: SnippetDataType }) => {
                   }}
                   type="radio"
                   id={`${transformOptionKey}_${snippet.snippet_id}`}
-                  name={`transformer`}
+                  name={`radio-option-${snippet.snippet_id}`}
                 />
                 <label
                   style={{ cursor: 'pointer' }}
@@ -195,6 +197,7 @@ const TextArea = ({ snippet }: { snippet: SnippetDataType }) => {
               </div>
             ),
           )}
+          <br />
           <br />
           <br />
           <button
