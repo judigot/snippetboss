@@ -11,12 +11,26 @@ export async function GET(
 ) {
   try {
     const sql: string = /*sql*/ `
-    SELECT s.*, l.*, p.*
-    FROM snippet s
-    JOIN snippet_language sl ON s.snippet_id = sl.snippet_id
-    JOIN language l ON sl.language_id = l.lang_id
-    JOIN prefix p ON s.prefix_id = p.prefix_id
-    WHERE l.lang_name = '${language}';
+    SELECT 
+        snippet.*,
+        (
+            SELECT json_agg(
+                json_build_object(
+                    'lang_id', language.lang_id,
+                    'lang_name', language.lang_name,
+                    'display_name', language.display_name
+                )
+            )
+            FROM snippet_language
+            JOIN language ON snippet_language.language_id = language.lang_id
+            WHERE snippet_language.snippet_id = snippet.snippet_id
+        ) AS languages,
+        prefix.*
+    FROM snippet
+    JOIN prefix ON snippet.prefix_id = prefix.prefix_id
+    LEFT JOIN snippet_language ON snippet.snippet_id = snippet_language.snippet_id
+    LEFT JOIN language ON snippet_language.language_id = language.lang_id AND language.lang_name = '${language}'
+    GROUP BY snippet.snippet_id, prefix.prefix_id;
   `;
     const result: Response = await prisma.$queryRawUnsafe(sql);
     return NextResponse.json<Response>(DatatypeParser(result));
