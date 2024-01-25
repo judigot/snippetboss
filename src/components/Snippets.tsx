@@ -92,7 +92,7 @@ const TextArea = ({ snippet }: { snippet: SnippetResponseType }) => {
           }: {
             snippet_content: snippet['snippet_content'];
           }) => {
-            if (snippet_content) {
+            if (snippet_content !== null) {
               setDefaultValue(snippet_content);
             }
           },
