@@ -59,6 +59,10 @@ const TextArea = ({ snippet }: { snippet: SnippetResponseType }) => {
     (typeof TRANSFORM_OPTIONS)[keyof typeof TRANSFORM_OPTIONS]
   >(TRANSFORM_OPTIONS.RAW_CODE);
 
+  const [prevRadioSelection, setPrevRadioSelection] = useState<
+    (typeof TRANSFORM_OPTIONS)[keyof typeof TRANSFORM_OPTIONS] | null
+  >(null);
+
   const transformedContent = (() => {
     switch (transformType) {
       case TRANSFORM_OPTIONS.RAW_CODE:
@@ -96,6 +100,9 @@ const TextArea = ({ snippet }: { snippet: SnippetResponseType }) => {
         .catch(() => {});
     }
     setIsBeingEdited(() => false);
+    if (prevRadioSelection) {
+      setTransformType(() => prevRadioSelection);
+    }
   };
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -150,6 +157,7 @@ const TextArea = ({ snippet }: { snippet: SnippetResponseType }) => {
           {!isBeingEdited && (
             <pre
               onDoubleClick={() => {
+                setPrevRadioSelection(() => transformType);
                 setTransformType(() => TRANSFORM_OPTIONS.DEFAULT);
                 setIsBeingEdited(() => true);
                 setTimeout(() => {
