@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "pnpm dotenv -e .env.local -- pnpm prisma db seed",
+    "delete-tables": "ts-node --compilerOptions \"{\\\"module\\\":\\\"CommonJS\\\"}\" ./src/prisma/scripts/DeleteTables.ts",
     "prisma-push-schema": "pnpm dotenv -e .env.local -- pnpm prisma db push && pnpm prisma generate",
     "prisma-pull-schema": "pnpm dotenv -e .env.local -- pnpm prisma db pull && pnpm prisma generate"
   },
