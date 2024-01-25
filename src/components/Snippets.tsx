@@ -41,11 +41,7 @@ export default function Snippets({ language }: Props) {
   );
 }
 
-const TextArea = ({
-  snippet: { snippet_id, snippet_content },
-}: {
-  snippet: SnippetDataType;
-}) => {
+const TextArea = ({ snippet }: { snippet: SnippetDataType }) => {
   const TRANSFORM_OPTIONS = {
     DEFAULT: 'Default',
     VS_CODE: 'VS Code Snippet',
@@ -53,7 +49,7 @@ const TextArea = ({
   } as const;
 
   const [defaultValue, setDefaultValue] = useState<string>(
-    snippet_content ?? '',
+    snippet.snippet_content ?? '',
   );
 
   const [isBeingEdited, setIsBeingEdited] = useState<boolean>(false);
@@ -62,23 +58,26 @@ const TextArea = ({
     (typeof TRANSFORM_OPTIONS)[keyof typeof TRANSFORM_OPTIONS]
   >(TRANSFORM_OPTIONS.RAW_CODE);
 
-  const transformedContent: string = (() => {
-    if (transformType === TRANSFORM_OPTIONS.RAW_CODE)
-      return StringModifier(defaultValue).removeDelimiters().get();
+  const transformedContent = (() => {
+    switch (transformType) {
+      case TRANSFORM_OPTIONS.RAW_CODE:
+        return StringModifier(defaultValue).removeDelimiters().get();
 
-    if (transformType === TRANSFORM_OPTIONS.VS_CODE)
-      return StringModifier(defaultValue)
-        .escapeQuotes()
-        .convertToSnippetFormat()
-        .get();
+      case TRANSFORM_OPTIONS.VS_CODE:
+        return StringModifier(defaultValue)
+          .escapeQuotes()
+          .convertToSnippetFormat(snippet)
+          .get();
 
-    return defaultValue;
+      default:
+        return defaultValue;
+    }
   })();
 
   const handleUpdate = (newValue: string) => {
     if (newValue !== defaultValue) {
       const body = {
-        snippet_id: snippet_id,
+        snippet_id: snippet.snippet_id,
         snippet_content: newValue,
       };
       updateSnippet(body)
@@ -117,6 +116,7 @@ const TextArea = ({
       <div
         style={{
           display: 'grid',
+          gap: '20px',
           gridTemplateColumns: '1fr 1fr',
           gridColumnGap: '10px',
         }}
@@ -183,18 +183,20 @@ const TextArea = ({
                     setTransformType(() => transformOptionValue);
                   }}
                   type="radio"
-                  id={`${transformOptionKey}-${snippet_id}`}
+                  id={`${transformOptionKey}_${snippet.snippet_id}`}
                   name={`transformer`}
                 />
                 <label
                   style={{ cursor: 'pointer' }}
-                  htmlFor={`${transformOptionKey}-${snippet_id}`}
+                  htmlFor={`${transformOptionKey}_${snippet.snippet_id}`}
                 >
                   {transformOptionValue}
                 </label>
               </div>
             ),
           )}
+          <br />
+          <br />
           <button
             onClick={() => {
               (async () => {

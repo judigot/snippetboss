@@ -1,3 +1,5 @@
+import { SnippetDataType } from '@/api-calls/snippet/read-snippet';
+
 export const StringModifier = (initialValue: string) => {
   let result: string = initialValue;
 
@@ -22,21 +24,30 @@ export const StringModifier = (initialValue: string) => {
       result = result.replace(/"/g, '\\"');
       return builder;
     },
-    convertToSnippetFormat: () => {
+    convertToSnippetFormat: ({
+      prefix_name,
+      display_name,
+      lang_name,
+    }: SnippetDataType) => {
       result = result
         .split('\n')
         .map((line, i) => {
           const lineCount = result.split('\n').length;
           let lineBuilder: string = line;
           const isLastLine: boolean = i + 1 === lineCount;
-          lineBuilder = `  "${line}"`;
+          lineBuilder = `    "${line}"`;
           if (!isLastLine) {
             lineBuilder = `${lineBuilder},\n`;
           }
           return `${lineBuilder}`;
         })
         .join('');
-      result = `[\n${result}\n]`;
+      result =
+`"Print to console (${display_name})": {
+  "prefix": "${prefix_name}",
+  "body": [\n${result}\n  ],
+  "scope": "${lang_name}"
+},`;
       return builder;
     },
   };
