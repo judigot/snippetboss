@@ -44,7 +44,7 @@ export const StringModifier = (initialValue: string) => {
       result = `"Print to console (${languages.map(({ display_name }) => display_name).join('/')})": {
   "prefix": "${prefix_name}",
   "body": [\n${result}\n  ],
-  "scope": "${languages.map(({ lang_name }) => lang_name).join(', ')}"
+  "scope": "${languages.map(({ language_name }) => language_name).join(', ')}"
 },`;
       return builder;
     },

@@ -68,14 +68,14 @@ export default function Languages() {
   return (
     <>
       {languages &&
-        languages?.map(({ lang_id, display_name, lang_name }) => (
+        languages?.map(({ language_id, display_name, language_name }) => (
           <button
-            key={lang_id}
+            key={language_id}
             onClick={() => {
-              changeLanguage(lang_name);
+              changeLanguage(language_name);
             }}
           >
-            {display_name !== '' ? display_name : lang_name}
+            {display_name !== '' ? display_name : language_name}
           </button>
         ))}
       {!languages && <span>No languages</span>}
@@ -88,12 +88,12 @@ export default function Languages() {
 }
 
 export function AddLanguageComponent() {
-  interface LanguageForm extends Omit<language, 'lang_id'> {}
+  interface LanguageForm extends Omit<language, 'language_id'> {}
 
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<LanguageForm>({
-    lang_name: '',
+    language_name: '',
     display_name: '',
   });
 
@@ -105,9 +105,9 @@ export function AddLanguageComponent() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { lang_name, display_name } = formData;
+    const { language_name, display_name } = formData;
 
-    if (lang_name && display_name !== null) {
+    if (language_name && display_name !== null) {
       createLanguage(formData)
         .then(() => {
           setFormData(formData);
@@ -134,11 +134,11 @@ export function AddLanguageComponent() {
             handleSubmit(e);
           }}
         >
-          <label htmlFor="lang_name">Programming Language</label>
+          <label htmlFor="language_name">Programming Language</label>
           <input
             required
             type="text"
-            name="lang_name"
+            name="language_name"
             onChange={handleInputChange}
           />
 

@@ -1,7 +1,7 @@
 import { customFetch } from '@/api-calls/customFetch';
 import { language } from '@prisma/client';
 
-interface Body extends Omit<language, 'lang_id'> {}
+interface Body extends Omit<language, 'language_id'> {}
 
 export const createLanguage = async (
   formData: Body,

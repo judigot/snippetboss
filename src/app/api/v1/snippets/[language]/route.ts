@@ -20,19 +20,19 @@ export async function GET(
         (
             SELECT json_agg(
                 json_build_object(
-                    'lang_id', language.lang_id,
-                    'lang_name', language.lang_name,
+                    'language_id', language.language_id,
+                    'language_name', language.language_name,
                     'display_name', language.display_name
                 )
             )
             FROM snippet_language
-            JOIN language ON snippet_language.language_id = language.lang_id
+            JOIN language ON snippet_language.language_id = language.language_id
             WHERE snippet_language.snippet_id = snippet.snippet_id
         ) AS languages
     FROM snippet
     JOIN prefix ON snippet.prefix_id = prefix.prefix_id
     LEFT JOIN snippet_language ON snippet.snippet_id = snippet_language.snippet_id
-    LEFT JOIN language ON snippet_language.language_id = language.lang_id AND language.lang_name = '${language}'
+    LEFT JOIN language ON snippet_language.language_id = language.language_id AND language.language_name = '${language}'
     GROUP BY snippet.snippet_id, prefix.prefix_id;
   `;
     const result: SnippetResponseType[] = await prisma.$queryRawUnsafe(sql);

@@ -3,7 +3,7 @@ import { prisma } from '@/prisma/DatabaseClient';
 import { language } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 
-interface Body extends Omit<language, 'lang_id'> {}
+interface Body extends Omit<language, 'language_id'> {}
 
 const PostHandler = async (req: NextRequest) => {
   try {

@@ -15,9 +15,9 @@ export async function GET({
         -- SELECT s.*, l.*, p.*
         -- FROM prefix s
         -- JOIN prefix_language sl ON s.prefix_id = sl.prefix_id
-        -- JOIN language l ON sl.language_id = l.lang_id
+        -- JOIN language l ON sl.language_id = l.language_id
         -- JOIN prefix p ON s.prefix_id = p.prefix_id
-        -- WHERE l.lang_name = '${language}';
+        -- WHERE l.language_name = '${language}';
 
         SELECT
           p.*,
@@ -25,7 +25,7 @@ export async function GET({
         FROM
           prefix s
           JOIN prefix_language sl ON s.prefix_id = sl.prefix_id
-          JOIN language l ON sl.language_id = l.lang_id
+          JOIN language l ON sl.language_id = l.language_id
           JOIN prefix p ON s.prefix_id = p.prefix_id
         WHERE
           p.prefix_id = 1
