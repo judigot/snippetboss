@@ -10,7 +10,7 @@ datasource db {
 model language {
   lang_id          BigInt             @id @default(autoincrement())
   lang_name        String             @unique
-  display_name     String?
+  display_name     String             @unique
   snippet_language snippet_language[]
 }
 
