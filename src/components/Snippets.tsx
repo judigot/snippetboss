@@ -150,6 +150,7 @@ const TextArea = ({ snippet }: { snippet: SnippetResponseType }) => {
                   resize: 'none',
                 },
               }}
+              spellCheck={false}
               defaultValue={defaultValue}
             />
           )}
