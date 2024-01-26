@@ -7,12 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "recreate-db": "pnpm dotenv -e .env.local -- pnpm run delete-tables && pnpm dotenv -e .env.local -- pnpm run prisma-push-schema",
-    "recreate-db-with-data": "pnpm dotenv -e .env.local -- pnpm run delete-tables && pnpm dotenv -e .env.local -- pnpm run prisma-push-schema && pnpm dotenv -e .env.local -- pnpm run seed",
+    "db:reset": "pnpm dotenv -e .env.local -- pnpm run db:drop && pnpm dotenv -e .env.local -- pnpm run prisma:db:push",
+    "db:reset-with-data": "pnpm dotenv -e .env.local -- pnpm run db:drop && pnpm dotenv -e .env.local -- pnpm run prisma:db:push && pnpm dotenv -e .env.local -- pnpm run seed",
+    "db:drop": "pnpm dotenv -e .env.local -- ts-node --compilerOptions \"{\\\"module\\\":\\\"CommonJS\\\"}\" ./src/prisma/scripts/DeleteTables.ts",
     "seed": "pnpm dotenv -e .env.local -- pnpm prisma db seed",
-    "delete-tables": "pnpm dotenv -e .env.local -- ts-node --compilerOptions \"{\\\"module\\\":\\\"CommonJS\\\"}\" ./src/prisma/scripts/DeleteTables.ts",
-    "prisma-push-schema": "pnpm dotenv -e .env.local -- pnpm prisma db push && pnpm prisma generate",
-    "prisma-pull-schema": "pnpm dotenv -e .env.local -- pnpm prisma db pull && pnpm prisma generate"
+    "prisma:db:push": "pnpm dotenv -e .env.local -- pnpm prisma db push && pnpm prisma generate",
+    "prisma:db:pull": "pnpm dotenv -e .env.local -- pnpm prisma db pull && pnpm prisma generate"
   },
   "prisma": {
     "seed": "ts-node --compilerOptions {\"module\":\"CommonJS\"} ./src/prisma/seed/seed.ts",
