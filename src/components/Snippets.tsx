@@ -138,9 +138,13 @@ const TextArea = ({ snippet }: { snippet: SnippetResponseType }) => {
                 const updatedValue: string = e.currentTarget.value;
                 handleUpdate(updatedValue);
               }}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-                  const updatedValue: string = event.currentTarget.value;
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  e.currentTarget.blur();
+                }
+
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                  const updatedValue: string = e.currentTarget.value;
                   handleUpdate(updatedValue);
                 }
               }}
