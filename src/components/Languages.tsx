@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { language } from '@prisma/client';
 import { createLanguage } from '@/api-calls/language/create-language';
 import { readLanguage } from '@/api-calls/language/read-language';
@@ -18,11 +18,29 @@ const getLangFromURL = () => {
 };
 
 export default function Languages() {
-  const [languages, setLanguages] = useState<language[] | null>([]);
-
-  const [currentLang, setCurrentLang] = useState<string | null>(
-    getLangFromURL(),
+  const [languages, setLanguages] = useState<language[] | null | undefined>(
+    undefined,
   );
+
+  const [currentLang, setCurrentLang] = useState<language | null | undefined>(
+    null,
+  );
+
+  const pagesKeys = {
+    PREFIXES: 'PREFIXES',
+    SNIPPETS: 'SNIPPETS',
+  } as const;
+
+  const pages: {
+    [K in keyof typeof pagesKeys]: string;
+  } = {
+    [pagesKeys.PREFIXES]: 'Prefixes',
+    [pagesKeys.SNIPPETS]: 'Snippets',
+  } as const;
+
+  const [currentPage, setCurrentPage] = useState<
+    (typeof pages)[keyof typeof pages]
+  >(!currentLang ? pages.PREFIXES : pages.SNIPPETS);
 
   const setURLParam = (language: string) => {
     if (typeof window === 'undefined') {
@@ -34,36 +52,57 @@ export default function Languages() {
     document.title = language;
   };
 
+  const getLanguageInfo = useCallback(
+    (lang?: language[] | null | undefined): language | null => {
+      const finalLang: language[] | null | undefined = lang ?? languages;
+
+      const selected: language | undefined = finalLang?.filter(
+        (language) => language.language_name === getLangFromURL(),
+      )[0];
+
+      if (!selected) {
+        return null;
+      }
+
+      return selected;
+    },
+    [languages],
+  );
+
   const changeLanguage = (language: string) => {
+    setCurrentPage(pages.SNIPPETS);
     setURLParam(language);
-    setCurrentLang(() => language);
+    setCurrentLang(() => getLanguageInfo());
   };
 
   useEffect(() => {
-    readLanguage()
-      .then((result) => {
-        if (result) {
-          setLanguages(result);
-        }
-      })
-      .catch(() => {});
-
     const handTitleChange = () => {
-      const language = getLangFromURL();
-      if (language === '') {
-        document.title = DEFAULT_TITLE;
-        setCurrentLang('');
-      }
-      document.title = language ?? '';
-      setCurrentLang(language);
+      const languageInURL = getLangFromURL() || DEFAULT_TITLE;
+      setCurrentPage(() =>
+        getLangFromURL() === '' ? pages.PREFIXES : pages.SNIPPETS,
+      );
+      document.title = languageInURL;
+      setCurrentLang(() => getLanguageInfo());
     };
-    handTitleChange();
+
+    if (languages === undefined) {
+      (async () => {
+        const result = await readLanguage();
+        if (result) {
+          setLanguages(() => {
+            setCurrentLang(() => getLanguageInfo(result));
+            return result;
+          });
+          handTitleChange();
+        }
+      })().catch(() => {});
+    }
 
     window.removeEventListener('popstate', handTitleChange);
     return () => {
       window.addEventListener('popstate', handTitleChange);
     };
-  }, []);
+  }, [languages, currentLang, getLanguageInfo, pages.SNIPPETS, pages.PREFIXES]);
 
   return (
     <>
@@ -84,8 +123,40 @@ export default function Languages() {
         <AddLanguageComponent />
       </section>
       <hr />
-      {currentLang !== null && currentLang !== '' && (
-        <Snippets language={currentLang} />
+      <div style={{ textAlign: 'center' }}>
+        {currentLang && (
+          <>
+            <a
+              href="page"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentPage(pages.PREFIXES);
+              }}
+            >
+              {pages.PREFIXES}
+            </a>
+            &nbsp;|&nbsp;
+            <a
+              href="page"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentPage(pages.SNIPPETS);
+              }}
+            >
+              {pages.SNIPPETS}
+            </a>
+          </>
+        )}
+      </div>
+
+      <h1>
+        {currentLang?.display_name}
+        &nbsp;
+        {currentPage}
+      </h1>
+
+      {currentPage === pages.SNIPPETS && (
+        <>{currentLang && <Snippets language={currentLang.language_name} />}</>
       )}
     </>
   );
