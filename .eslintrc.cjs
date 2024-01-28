@@ -44,6 +44,13 @@ module.exports = {
     ],
 
     //
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'TSEnumDeclaration',
+        message: 'Enums are not allowed. Use object literals instead.',
+      },
+    ],
     'no-alert': ['error'],
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'arrow-body-style': ['error', 'as-needed'],
