@@ -20,6 +20,4 @@ async function main() {
   }
 }
 
-main()
-  .then(() => {})
-  .catch(() => {});
+await main();
