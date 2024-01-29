@@ -15,23 +15,12 @@ export async function GET(
 ) {
   // prefixes?prefix=value
   const sql: string = /*sql*/ `
-        -- SELECT p.*, l.*, p.*
-        -- FROM prefix s
-        -- JOIN prefix_language sl ON p.prefix_id = sl.prefix_id
-        -- JOIN language l ON sl.language_id = l.language_id
-        -- JOIN prefix p ON p.prefix_id = p.prefix_id
-        -- WHERE l.language_name = '${language}';
-
-        SELECT
-          p.*,
-          json_agg(l) AS languages
-        FROM
-          prefix p
-          JOIN language l ON p.language_id = l.language_id
-        WHERE
-          p.prefix_id = 1
-        GROUP BY
-          p.prefix_id;
+        SELECT DISTINCT p.prefix_name
+        FROM prefix p
+        JOIN snippet s ON p.prefix_id = s.prefix_id
+        JOIN snippet_language sl ON s.snippet_id = sl.snippet_id
+        JOIN language l ON sl.language_id = l.language_id
+        WHERE l.language_name = '${language}';
     `;
   const result: PrefixLanguageIntersection = await prisma.$queryRawUnsafe(sql);
   // const result = await prisma.prefix.findMany({});

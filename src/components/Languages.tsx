@@ -71,7 +71,7 @@ export default function Languages() {
   );
 
   const changeLanguage = (language: string) => {
-    setCurrentPage(pages.SNIPPETS);
+    // setCurrentPage(pages.SNIPPETS);
     setURLParam(language);
     setCurrentLang(() => getLanguageInfo());
   };
@@ -156,7 +156,9 @@ export default function Languages() {
         {currentPage}
       </h1>
 
-      {currentPage === pages.PREFIXES && <Prefixes language={currentLang?.language_name} />}
+      {currentPage === pages.PREFIXES && (
+        <Prefixes language={currentLang?.language_name} />
+      )}
 
       {currentPage === pages.SNIPPETS && (
         <>{currentLang && <Snippets language={currentLang.language_name} />}</>
