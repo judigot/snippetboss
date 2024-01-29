@@ -26,6 +26,7 @@ export const StringModifier = (initialValue: string) => {
     },
     convertToSnippetFormat: ({
       prefix_name,
+      prefix_description,
       languages,
     }: SnippetResponseType) => {
       result = result
@@ -41,7 +42,7 @@ export const StringModifier = (initialValue: string) => {
           return `${lineBuilder}`;
         })
         .join('');
-      result = `"Print to console (${languages.map(({ display_name }) => display_name).join('/')})": {
+      result = `"${prefix_description} (${languages.map(({ display_name }) => display_name).join('/')})": {
   "prefix": "${prefix_name}",
   "body": [\n${result}\n  ],
   "scope": "${languages.map(({ language_name }) => language_name).join(', ')}"
