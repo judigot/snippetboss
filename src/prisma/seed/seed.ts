@@ -19,7 +19,10 @@ async function main() {
     });
 
     await prisma.prefix.createMany({
-      data: [{ prefix_name: 'log' }, { prefix_name: 'logRed' }],
+      data: [
+        { prefix_name: 'log', prefix_description: 'Print to Console' },
+        { prefix_name: 'logRed', prefix_description: 'Print Red to  Console' },
+      ],
     });
 
     await prisma.snippet.createMany({

@@ -15,7 +15,7 @@ export async function GET(
 ) {
   // prefixes?prefix=value
   const sql: string = /*sql*/ `
-        SELECT DISTINCT p.prefix_name
+        SELECT DISTINCT p.*
         FROM prefix p
         JOIN snippet s ON p.prefix_id = s.prefix_id
         JOIN snippet_language sl ON s.snippet_id = sl.snippet_id
