@@ -19,14 +19,6 @@ const getLangFromURL = () => {
 };
 
 export default function Languages() {
-  const [languages, setLanguages] = useState<language[] | null | undefined>(
-    undefined,
-  );
-
-  const [currentLang, setCurrentLang] = useState<language | null | undefined>(
-    undefined,
-  );
-
   const pagesKeys = {
     PREFIXES: 'PREFIXES',
     SNIPPETS: 'SNIPPETS',
@@ -38,6 +30,14 @@ export default function Languages() {
     [pagesKeys.PREFIXES]: 'Prefixes',
     [pagesKeys.SNIPPETS]: 'Snippets',
   } as const;
+
+  const [languages, setLanguages] = useState<language[] | null | undefined>(
+    undefined,
+  );
+
+  const [selectedLang, setSelectedLang] = useState<language | null | undefined>(
+    undefined,
+  );
 
   const [currentPage, setCurrentPage] = useState<
     (typeof pages)[keyof typeof pages] | undefined
@@ -71,9 +71,8 @@ export default function Languages() {
   );
 
   const changeLanguage = (language: string) => {
-    // setCurrentPage(pages.SNIPPETS);
     setURLParam(language);
-    setCurrentLang(() => getSelectedLanguageInfo());
+    setSelectedLang(() => getSelectedLanguageInfo());
   };
 
   useEffect(() => {
@@ -91,7 +90,7 @@ export default function Languages() {
         if (result) {
           handTitleChange();
           setLanguages(() => result);
-          setCurrentLang(() => getSelectedLanguageInfo(result));
+          setSelectedLang(() => getSelectedLanguageInfo(result));
         }
       })();
     }
@@ -100,13 +99,7 @@ export default function Languages() {
     return () => {
       window.addEventListener('popstate', handTitleChange);
     };
-  }, [
-    languages,
-    // currentLang,
-    getSelectedLanguageInfo,
-    pages.SNIPPETS,
-    pages.PREFIXES,
-  ]);
+  }, [languages, getSelectedLanguageInfo, pages.SNIPPETS, pages.PREFIXES]);
 
   return (
     <>
@@ -128,7 +121,7 @@ export default function Languages() {
       </section>
       <hr />
       <div style={{ textAlign: 'center' }}>
-        {currentLang && (
+        {selectedLang && (
           <>
             <a
               href="page"
@@ -153,18 +146,20 @@ export default function Languages() {
         )}
       </div>
 
-      <h1>
-        {currentLang?.display_name}
-        &nbsp;
-        {currentPage}
-      </h1>
-
-      {currentLang?.display_name && currentPage === pages.PREFIXES && (
-        <Prefixes language={currentLang.language_name} />
-      )}
-
-      {currentLang?.display_name && currentPage === pages.SNIPPETS && (
-        <>{<Snippets language={currentLang.language_name} />}</>
+      {selectedLang && (
+        <>
+          <h1>
+            {selectedLang.display_name}
+            &nbsp;
+            {currentPage}
+          </h1>
+          {currentPage === pages.PREFIXES && (
+            <Prefixes language={selectedLang.language_name} />
+          )}
+          {currentPage === pages.SNIPPETS && (
+            <>{<Snippets language={selectedLang.language_name} />}</>
+          )}
+        </>
       )}
     </>
   );
