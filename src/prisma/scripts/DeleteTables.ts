@@ -20,4 +20,6 @@ async function main() {
   }
 }
 
-await main();
+void (async () => {
+  await main();
+})();
