@@ -53,7 +53,7 @@ export default function Languages() {
     document.title = language;
   };
 
-  const getLanguageInfo = useCallback(
+  const getSelectedLanguageInfo = useCallback(
     (lang?: language[] | null | undefined): language | null => {
       const finalLang: language[] | null | undefined = lang ?? languages;
 
@@ -73,7 +73,7 @@ export default function Languages() {
   const changeLanguage = (language: string) => {
     // setCurrentPage(pages.SNIPPETS);
     setURLParam(language);
-    setCurrentLang(() => getLanguageInfo());
+    setCurrentLang(() => getSelectedLanguageInfo());
   };
 
   useEffect(() => {
@@ -83,27 +83,27 @@ export default function Languages() {
         getLangFromURL() === '' ? pages.PREFIXES : pages.SNIPPETS,
       );
       document.title = languageInURL;
-      setCurrentLang(() => getLanguageInfo());
+      setCurrentLang(() => getSelectedLanguageInfo());
     };
 
     if (languages === undefined) {
-      (async () => {
+      void (async () => {
         const result = await readLanguage();
         if (result) {
           setLanguages(() => {
-            setCurrentLang(() => getLanguageInfo(result));
+            setCurrentLang(() => getSelectedLanguageInfo(result));
             return result;
           });
           handTitleChange();
         }
-      })().catch(() => {});
+      })();
     }
 
     window.removeEventListener('popstate', handTitleChange);
     return () => {
       window.addEventListener('popstate', handTitleChange);
     };
-  }, [languages, currentLang, getLanguageInfo, pages.SNIPPETS, pages.PREFIXES]);
+  }, [languages, currentLang, getSelectedLanguageInfo, pages.SNIPPETS, pages.PREFIXES]);
 
   return (
     <>
