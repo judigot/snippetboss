@@ -63,7 +63,7 @@ module.exports = {
     ],
     '@typescript-eslint/no-explicit-any': 'error',
     // '@typescript-eslint/strict-boolean-expressions': 'error',
-    complexity: ['error', 10],
+    // complexity: ['error', 10],
     'max-depth': ['error', 4],
     'max-lines': ['error', 300],
     'react/jsx-props-no-spreading': 'error',

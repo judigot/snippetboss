@@ -1,11 +1,11 @@
 'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { language } from '@prisma/client';
-import { createLanguage } from '@/api-calls/language/create-language';
 import { readLanguage } from '@/api-calls/language/read-language';
 import Snippets from '@/components/Snippets';
 import Prefixes from '@/components/Prefixes';
+import { AddLanguageComponent } from './AddLanguageComponent';
 
 const DEFAULT_TITLE: string = 'SnippetMaster';
 
@@ -20,6 +20,7 @@ const getLangFromURL = () => {
 
 export default function Languages() {
   const pagesKeys = {
+    ALL_PREFIXES: 'ALL_PREFIXES',
     PREFIXES: 'PREFIXES',
     SNIPPETS: 'SNIPPETS',
   } as const;
@@ -27,6 +28,7 @@ export default function Languages() {
   const pages: {
     [K in keyof typeof pagesKeys]: string;
   } = {
+    [pagesKeys.ALL_PREFIXES]: 'All Prefixes',
     [pagesKeys.PREFIXES]: 'Prefixes',
     [pagesKeys.SNIPPETS]: 'Snippets',
   } as const;
@@ -90,7 +92,13 @@ export default function Languages() {
         if (result) {
           handTitleChange();
           setLanguages(() => result);
-          setSelectedLang(() => getSelectedLanguageInfo(result));
+          const lang = getSelectedLanguageInfo(result);
+
+          if (lang) {
+            setSelectedLang(() => getSelectedLanguageInfo(result));
+            return;
+          }
+          setCurrentPage(pages.ALL_PREFIXES);
         }
       })();
     }
@@ -99,7 +107,13 @@ export default function Languages() {
     return () => {
       window.addEventListener('popstate', handTitleChange);
     };
-  }, [languages, getSelectedLanguageInfo, pages.SNIPPETS, pages.PREFIXES]);
+  }, [
+    languages,
+    getSelectedLanguageInfo,
+    pages.ALL_PREFIXES,
+    pages.PREFIXES,
+    pages.SNIPPETS,
+  ]);
 
   return (
     <>
@@ -111,6 +125,9 @@ export default function Languages() {
               key={language_id}
               onClick={() => {
                 changeLanguage(language_name);
+                if (currentPage === pages.ALL_PREFIXES) {
+                  setCurrentPage(pages.SNIPPETS);
+                }
               }}
             >
               {display_name !== '' ? display_name : language_name}
@@ -121,8 +138,22 @@ export default function Languages() {
       </section>
       <hr />
       <div style={{ textAlign: 'center' }}>
-        {selectedLang && (
+        {currentPage !== pages.ALL_PREFIXES && selectedLang && (
           <>
+            <a
+              href="page"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentPage(pages.ALL_PREFIXES);
+                setSelectedLang(() => {
+                  getSelectedLanguageInfo();
+                  return undefined;
+                });
+              }}
+            >
+              {pages.ALL_PREFIXES}
+            </a>
+            &nbsp;|&nbsp;
             <a
               href="page"
               onClick={(e) => {
@@ -146,92 +177,17 @@ export default function Languages() {
         )}
       </div>
 
+      {currentPage === pages.ALL_PREFIXES && <Prefixes />}
+
       {selectedLang && (
         <>
-          <h1>
-            {selectedLang.display_name}
-            &nbsp;
-            {currentPage}
-          </h1>
           {currentPage === pages.PREFIXES && (
-            <Prefixes language={selectedLang.language_name} />
+            <Prefixes language={selectedLang} />
           )}
           {currentPage === pages.SNIPPETS && (
-            <>{<Snippets language={selectedLang.language_name} />}</>
+            <>{<Snippets language={selectedLang} />}</>
           )}
         </>
-      )}
-    </>
-  );
-}
-
-export function AddLanguageComponent() {
-  interface LanguageForm extends Omit<language, 'language_id'> {}
-
-  const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
-
-  const [formData, setFormData] = useState<LanguageForm>({
-    language_name: '',
-    display_name: '',
-  });
-
-  const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
-    const { name, value } = e.currentTarget;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const { language_name, display_name } = formData;
-
-    if (language_name && display_name !== null) {
-      createLanguage(formData)
-        .then(() => {
-          setFormData(formData);
-          setIsFormVisible(false);
-        })
-        .catch(() => {});
-    }
-  };
-
-  return (
-    <>
-      <button
-        onClick={() => {
-          setIsFormVisible(!isFormVisible);
-        }}
-      >
-        +
-      </button>
-
-      {isFormVisible && (
-        <section>
-          <form
-            style={{ display: 'inline-block' }}
-            onSubmit={(e) => {
-              handleSubmit(e);
-            }}
-          >
-            <label htmlFor="language_name">Programming Language</label>
-            <input
-              required
-              type="text"
-              name="language_name"
-              onChange={handleInputChange}
-            />
-
-            <label htmlFor="display_name">Display Name</label>
-            <input
-              // required
-              type="text"
-              name="display_name"
-              onChange={handleInputChange}
-            />
-
-            <button type="submit">Submit</button>
-          </form>
-        </section>
       )}
     </>
   );

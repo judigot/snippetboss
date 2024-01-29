@@ -2,11 +2,11 @@
 
 import { readPrefix } from '@/api-calls/prefix/read-prefix';
 import { readPrefixByLanguage } from '@/api-calls/prefix/read-prefix-by-language';
-import { prefix } from '@prisma/client';
+import { language, prefix } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 interface Props {
-  language?: string;
+  language?: language;
 }
 
 export default function Prefixes({ language }: Props) {
@@ -18,7 +18,7 @@ export default function Prefixes({ language }: Props) {
     (async () => {
       const result = !language
         ? await readPrefix()
-        : await readPrefixByLanguage(language);
+        : await readPrefixByLanguage(language.language_name);
       if (result) {
         setPrefixes(result);
       }
@@ -27,8 +27,15 @@ export default function Prefixes({ language }: Props) {
 
   return (
     <>
-      <h1>Prefixes</h1>
-      {JSON.stringify(prefixes, null, 4)}
+      <section style={{ textAlign: 'center' }}>
+        <h1>{language?.display_name ?? 'All'} Prefixes</h1>
+        {prefixes?.map(({ prefix_id, prefix_name, prefix_description }) => (
+          <div key={prefix_id}>
+            <h1>{prefix_name}</h1>
+            <p>{prefix_description}</p>
+          </div>
+        ))}
+      </section>
     </>
   );
 }

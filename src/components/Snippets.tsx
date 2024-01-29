@@ -4,18 +4,18 @@ import { readSnippet } from '@/api-calls/snippet/read-snippet';
 import { updateSnippet } from '@/api-calls/snippet/update-snippet';
 import { SnippetResponseType } from '@/app/api/v1/snippets/[language]/route';
 import { StringModifier } from '@/utils/StringModifier';
-import { snippet } from '@prisma/client';
+import { language, snippet } from '@prisma/client';
 import { useEffect, useRef, useState } from 'react';
 
 interface Props {
-  language: string;
+  language: language;
 }
 
 export default function Snippets({ language }: Props) {
   const [snippets, setSnippets] = useState<SnippetResponseType[] | null>([]);
 
   useEffect(() => {
-    readSnippet(language)
+    readSnippet(language.language_name)
       .then((result) => {
         if (result) {
           setSnippets(result);
@@ -28,9 +28,10 @@ export default function Snippets({ language }: Props) {
     <>
       {snippets && (
         <>
+          <h1>{language.display_name} Snippets</h1>
           {snippets?.map((snippet) => (
             <div key={snippet.snippet_id}>
-              <h1>{snippet.prefix_name}</h1>
+              <h2>{snippet.prefix_name}</h2>
               {snippet.snippet_content !== null && (
                 <TextArea snippet={snippet} />
               )}
