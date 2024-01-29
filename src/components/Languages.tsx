@@ -24,7 +24,7 @@ export default function Languages() {
   );
 
   const [currentLang, setCurrentLang] = useState<language | null | undefined>(
-    null,
+    undefined,
   );
 
   const pagesKeys = {
