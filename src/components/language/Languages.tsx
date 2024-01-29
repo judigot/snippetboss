@@ -1,22 +1,10 @@
 'use client';
-
 import { useCallback, useEffect, useState } from 'react';
 import { language } from '@prisma/client';
 import { readLanguage } from '@/api-calls/language/read-language';
-import Snippets from '@/components/Snippets';
-import Prefixes from '@/components/Prefixes';
-import { AddLanguageComponent } from './AddLanguageComponent';
-
-const DEFAULT_TITLE: string = 'SnippetMaster';
-
-const getLangFromURL = () => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  const searchParams = new URLSearchParams(window.location.search);
-  const language = (searchParams.get('language') ?? '') || ''; // Default to an empty string if parameter is not present
-  return language;
-};
+import Snippets from '@/components/snippet/Snippets';
+import Prefixes from '@/components/prefix/Prefixes';
+import { AddLanguageComponent } from '@/components/language/AddLanguageComponent';
 
 export default function Languages() {
   const pagesKeys = {
@@ -32,6 +20,17 @@ export default function Languages() {
     [pagesKeys.PREFIXES]: 'Prefixes',
     [pagesKeys.SNIPPETS]: 'Snippets',
   } as const;
+
+  const DEFAULT_TITLE: string = 'SnippetMaster';
+
+  const getLangFromURL = () => {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    const searchParams = new URLSearchParams(window.location.search);
+    const language = (searchParams.get('language') ?? '') || ''; // Default to an empty string if parameter is not present
+    return language;
+  };
 
   const [languages, setLanguages] = useState<language[] | null | undefined>(
     undefined,
