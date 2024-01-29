@@ -15,21 +15,19 @@ export async function GET(
 ) {
   // prefixes?prefix=value
   const sql: string = /*sql*/ `
-        -- SELECT s.*, l.*, p.*
+        -- SELECT p.*, l.*, p.*
         -- FROM prefix s
-        -- JOIN prefix_language sl ON s.prefix_id = sl.prefix_id
+        -- JOIN prefix_language sl ON p.prefix_id = sl.prefix_id
         -- JOIN language l ON sl.language_id = l.language_id
-        -- JOIN prefix p ON s.prefix_id = p.prefix_id
+        -- JOIN prefix p ON p.prefix_id = p.prefix_id
         -- WHERE l.language_name = '${language}';
 
         SELECT
           p.*,
           json_agg(l) AS languages
         FROM
-          prefix s
-          JOIN prefix_language sl ON s.prefix_id = sl.prefix_id
-          JOIN language l ON sl.language_id = l.language_id
-          JOIN prefix p ON s.prefix_id = p.prefix_id
+          prefix p
+          JOIN language l ON p.language_id = l.language_id
         WHERE
           p.prefix_id = 1
         GROUP BY

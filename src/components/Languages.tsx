@@ -5,6 +5,7 @@ import { language } from '@prisma/client';
 import { createLanguage } from '@/api-calls/language/create-language';
 import { readLanguage } from '@/api-calls/language/read-language';
 import Snippets from '@/components/Snippets';
+import Prefixes from '@/components/Prefixes';
 
 const DEFAULT_TITLE: string = 'SnippetMaster';
 
@@ -154,6 +155,8 @@ export default function Languages() {
         &nbsp;
         {currentPage}
       </h1>
+
+      {currentPage === pages.PREFIXES && <Prefixes language={currentLang?.language_name} />}
 
       {currentPage === pages.SNIPPETS && (
         <>{currentLang && <Snippets language={currentLang.language_name} />}</>
