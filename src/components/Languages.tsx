@@ -83,18 +83,15 @@ export default function Languages() {
         getLangFromURL() === '' ? pages.PREFIXES : pages.SNIPPETS,
       );
       document.title = languageInURL;
-      setCurrentLang(() => getSelectedLanguageInfo());
     };
 
     if (languages === undefined) {
       void (async () => {
         const result = await readLanguage();
         if (result) {
-          setLanguages(() => {
-            setCurrentLang(() => getSelectedLanguageInfo(result));
-            return result;
-          });
           handTitleChange();
+          setLanguages(() => result);
+          setCurrentLang(() => getSelectedLanguageInfo(result));
         }
       })();
     }
@@ -105,7 +102,7 @@ export default function Languages() {
     };
   }, [
     languages,
-    currentLang,
+    // currentLang,
     getSelectedLanguageInfo,
     pages.SNIPPETS,
     pages.PREFIXES,
@@ -162,17 +159,13 @@ export default function Languages() {
         {currentPage}
       </h1>
 
-      {currentLang &&
-        currentLang.display_name &&
-        currentPage === pages.PREFIXES && (
-          <Prefixes language={currentLang.language_name} />
-        )}
+      {currentLang?.display_name && currentPage === pages.PREFIXES && (
+        <Prefixes language={currentLang.language_name} />
+      )}
 
-      {currentLang &&
-        currentLang?.display_name &&
-        currentPage === pages.SNIPPETS && (
-          <>{<Snippets language={currentLang.language_name} />}</>
-        )}
+      {currentLang?.display_name && currentPage === pages.SNIPPETS && (
+        <>{<Snippets language={currentLang.language_name} />}</>
+      )}
     </>
   );
 }
