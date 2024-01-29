@@ -40,8 +40,8 @@ export default function Languages() {
   } as const;
 
   const [currentPage, setCurrentPage] = useState<
-    (typeof pages)[keyof typeof pages]
-  >(!currentLang ? pages.PREFIXES : pages.SNIPPETS);
+    (typeof pages)[keyof typeof pages] | undefined
+  >(undefined);
 
   const setURLParam = (language: string) => {
     if (typeof window === 'undefined') {
@@ -103,7 +103,13 @@ export default function Languages() {
     return () => {
       window.addEventListener('popstate', handTitleChange);
     };
-  }, [languages, currentLang, getSelectedLanguageInfo, pages.SNIPPETS, pages.PREFIXES]);
+  }, [
+    languages,
+    currentLang,
+    getSelectedLanguageInfo,
+    pages.SNIPPETS,
+    pages.PREFIXES,
+  ]);
 
   return (
     <>
@@ -156,13 +162,17 @@ export default function Languages() {
         {currentPage}
       </h1>
 
-      {currentPage === pages.PREFIXES && (
-        <Prefixes language={currentLang?.language_name} />
-      )}
+      {currentLang &&
+        currentLang.display_name &&
+        currentPage === pages.PREFIXES && (
+          <Prefixes language={currentLang.language_name} />
+        )}
 
-      {currentPage === pages.SNIPPETS && (
-        <>{currentLang && <Snippets language={currentLang.language_name} />}</>
-      )}
+      {currentLang &&
+        currentLang?.display_name &&
+        currentPage === pages.SNIPPETS && (
+          <>{<Snippets language={currentLang.language_name} />}</>
+        )}
     </>
   );
 }
