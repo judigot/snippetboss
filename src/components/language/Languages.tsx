@@ -44,11 +44,17 @@ export default function Languages() {
     (typeof pages)[keyof typeof pages] | undefined
   >(undefined);
 
-  const setURLParam = (language: string) => {
+  const setURLParam = (language: string | undefined) => {
     if (typeof window === 'undefined') {
       return;
     }
     const newUrl = new URL(window.location.href);
+    if (language === undefined) {
+      newUrl.searchParams.delete('language');
+      window.history.pushState({}, '', newUrl.toString());
+      document.title = pages.ALL_PREFIXES;
+      return;
+    }
     newUrl.searchParams.set('language', language);
     window.history.pushState({}, '', newUrl.toString());
     document.title = language;
@@ -98,6 +104,7 @@ export default function Languages() {
             return;
           }
           setCurrentPage(pages.ALL_PREFIXES);
+          document.title = pages.ALL_PREFIXES;
         }
       })();
     }
@@ -146,6 +153,7 @@ export default function Languages() {
                 setCurrentPage(pages.ALL_PREFIXES);
                 setSelectedLang(() => {
                   getSelectedLanguageInfo();
+                  setURLParam(undefined);
                   return undefined;
                 });
               }}
