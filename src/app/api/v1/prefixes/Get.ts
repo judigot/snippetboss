@@ -25,7 +25,7 @@ const GetHandler = async (req: NextRequest) => {
     `;
     const result: PrefixResponse = await prisma.$queryRawUnsafe(sql);
 
-    return NextResponse.json<typeof result>(DatatypeParser(result));
+    return NextResponse.json(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {

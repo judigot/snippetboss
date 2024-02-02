@@ -7,8 +7,8 @@ interface Response extends snippet_type {}
 
 const GetHandler = async (_req: NextRequest) => {
   try {
-    const result = await prisma.snippet_type.findMany();
-    return NextResponse.json<Response[]>(DatatypeParser(result));
+    const result: Response[] = await prisma.snippet_type.findMany();
+    return NextResponse.json(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {

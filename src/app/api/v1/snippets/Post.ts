@@ -10,10 +10,10 @@ interface Response extends snippet {}
 const PostHandler = async (req: NextRequest) => {
   try {
     const body = (await req.json()) as Body;
-    const result = await prisma.snippet.create({
+    const result: Response = await prisma.snippet.create({
       data: body,
     });
-    return NextResponse.json<Response>(DatatypeParser(result), {
+    return NextResponse.json(DatatypeParser(result), {
       status: 200,
     });
   } catch (error) {

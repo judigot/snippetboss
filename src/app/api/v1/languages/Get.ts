@@ -7,8 +7,8 @@ interface Response extends language {}
 
 const GetHandler = async (_req: NextRequest) => {
   try {
-    const result = await prisma.language.findMany();
-    return NextResponse.json<Response[]>(DatatypeParser(result));
+    const result: Response[] = await prisma.language.findMany();
+    return NextResponse.json(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {

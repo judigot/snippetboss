@@ -3,8 +3,7 @@ import { prisma } from '@/prisma/DatabaseClient';
 import { snippet } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 
-interface Body
-  extends Pick<snippet, 'snippet_id' | 'snippet_content'> {}
+interface Body extends Pick<snippet, 'snippet_id' | 'snippet_content'> {}
 
 interface Response extends snippet {}
 
@@ -19,7 +18,7 @@ const PatchHandler = async (req: NextRequest) => {
         snippet_content,
       },
     });
-    return NextResponse.json<Response>(DatatypeParser(result), {
+    return NextResponse.json(DatatypeParser(result), {
       status: 200,
     });
   } catch (error) {

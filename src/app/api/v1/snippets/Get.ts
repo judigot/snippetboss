@@ -13,8 +13,8 @@ const GetHandler = async (req: NextRequest) => {
       return NextResponse.json({ language });
     }
     // snippets?language=value
-    const result = await prisma.snippet.findMany();
-    return NextResponse.json<Response[]>(DatatypeParser(result));
+    const result: Response[] = await prisma.snippet.findMany();
+    return NextResponse.json(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {
