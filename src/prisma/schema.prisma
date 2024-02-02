@@ -31,9 +31,9 @@ model snippet_type {
 }
 
 model prefix {
-  prefix_id          BigInt    @id @default(autoincrement())
-  prefix_name        String    @unique
+  prefix_id          BigInt        @id @default(autoincrement())
   prefix_description String?
+  prefix_name        prefix_name[]
   snippet            snippet[]
 }
 
@@ -45,4 +45,12 @@ model snippet_language {
   snippet             snippet  @relation(fields: [snippet_id], references: [snippet_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_snippet_language.snippet_id")
 
   @@unique([language_id, snippet_id])
+}
+
+model prefix_name {
+  prefix_name_id BigInt   @id @default(autoincrement())
+  prefix_id      BigInt
+  prefix_name    String   @unique
+  is_default     Boolean?
+  prefix         prefix   @relation(fields: [prefix_id], references: [prefix_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_prefix_name.prefix_id")
 }

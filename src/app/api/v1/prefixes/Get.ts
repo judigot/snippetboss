@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prefix } from '@prisma/client';
+import { prefix, prefix_name } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
-interface Response extends prefix {}
+type PrefixResponse = prefix & {
+  prefix_names: prefix_name[];
+};
 
 const GetHandler = async (req: NextRequest) => {
   try {
@@ -13,9 +15,17 @@ const GetHandler = async (req: NextRequest) => {
       return NextResponse.json({ language });
     }
 
-    // prefixes?language=value
-    const result = await prisma.prefix.findMany();
-    return NextResponse.json<Response[]>(DatatypeParser(result));
+    const sql: string = /*sql*/ `
+        SELECT
+            p.*,
+            json_agg(pn.*) AS prefix_names
+        FROM prefix p
+        JOIN prefix_name pn ON p.prefix_id = pn.prefix_id
+        GROUP BY p.prefix_id;
+    `;
+    const result: PrefixResponse = await prisma.$queryRawUnsafe(sql);
+
+    return NextResponse.json<typeof result>(DatatypeParser(result));
   } catch (error) {
     console.error(error);
   } finally {

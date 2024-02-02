@@ -21,23 +21,18 @@ async function main() {
     await prisma.prefix.createMany({
       data: [
         {
-          prefix_name: 'varText; stringVariable',
           prefix_description: 'String Variable',
         },
         {
-          prefix_name: 'varNumber; numberIntegerVariable',
           prefix_description: 'Integer Number Variable',
         },
         {
-          prefix_name: 'varDecimal; numberFloatVariable',
           prefix_description: 'Description',
         },
         {
-          prefix_name: 'varBoolean; booleanVariable',
           prefix_description: 'Description',
         },
         {
-          prefix_name: 'varObject; objectVariable',
           prefix_description: 'Description',
         },
         // {
@@ -319,6 +314,61 @@ async function main() {
         //   prefix_name: 'convertToNum',
         //   prefix_description: 'Description',
         // },
+      ],
+    });
+
+    await prisma.prefix_name.createMany({
+      data: [
+        {
+          prefix_id: 1,
+          prefix_name: 'varText',
+          is_default: true,
+        },
+        {
+          prefix_id: 1,
+          prefix_name: 'stringVariable',
+          is_default: false,
+        },
+        {
+          prefix_id: 2,
+          prefix_name: 'varNumber',
+          is_default: true,
+        },
+        {
+          prefix_id: 2,
+          prefix_name: 'numberIntegerVariable',
+          is_default: false,
+        },
+        {
+          prefix_id: 3,
+          prefix_name: 'varDecimal',
+          is_default: true,
+        },
+        {
+          prefix_id: 3,
+          prefix_name: 'numberFloatVariable',
+          is_default: false,
+        },
+        {
+          prefix_id: 4,
+          prefix_name: 'varBoolean',
+          is_default: true,
+        },
+        {
+          prefix_id: 4,
+          prefix_name: 'booleanVariable',
+          is_default: false,
+        },
+        {
+          prefix_id: 5,
+          prefix_name: 'varObject',
+          is_default: true,
+        },
+        {
+          prefix_id: 5,
+          prefix_name: 'objectVariable',
+          is_default: false,
+        },
       ],
     });
 

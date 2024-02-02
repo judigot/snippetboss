@@ -1,9 +1,11 @@
 import { prisma } from '@/prisma/DatabaseClient';
 import DatatypeParser from '@/utils/DataTypeParser';
-import { prefix, language } from '@prisma/client';
+import { prefix, prefix_name } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
-type PrefixLanguageIntersection = prefix & language;
+type PrefixResponse = prefix & {
+  prefix_names: prefix_name[];
+};
 
 export async function GET(
   _req: NextRequest,
@@ -13,16 +15,24 @@ export async function GET(
     params: { language: string };
   },
 ) {
-  // prefixes?prefix=value
-  const sql: string = /*sql*/ `
-        SELECT DISTINCT p.*
+  try {
+    const sql: string = /*sql*/ `
+        SELECT 
+            p.*,
+            json_agg(pn.*) AS prefix_names
         FROM prefix p
+        JOIN prefix_name pn ON p.prefix_id = pn.prefix_id
         JOIN snippet s ON p.prefix_id = s.prefix_id
         JOIN snippet_language sl ON s.snippet_id = sl.snippet_id
         JOIN language l ON sl.language_id = l.language_id
-        WHERE l.language_name = '${language}';
+        WHERE l.language_name = '${language}'
+        GROUP BY p.prefix_id;
     `;
-  const result: PrefixLanguageIntersection = await prisma.$queryRawUnsafe(sql);
-  // const result = await prisma.prefix.findMany({});
-  return NextResponse.json<typeof result>(DatatypeParser(result));
+    const result: PrefixResponse = await prisma.$queryRawUnsafe(sql);
+    return NextResponse.json<typeof result>(DatatypeParser(result));
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
