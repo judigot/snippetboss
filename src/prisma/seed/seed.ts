@@ -329,51 +329,61 @@ async function main() {
     await prisma.prefix_name.createMany({
       data: [
         {
+          prefix_name_id: 1,
           prefix_id: 1,
           prefix_name: 'varText',
           is_default: true,
         },
         {
+          prefix_name_id: 2,
           prefix_id: 1,
           prefix_name: 'stringVariable',
           is_default: false,
         },
         {
+          prefix_name_id: 3,
           prefix_id: 2,
           prefix_name: 'varNumber',
           is_default: true,
         },
         {
+          prefix_name_id: 4,
           prefix_id: 2,
           prefix_name: 'numberIntegerVariable',
           is_default: false,
         },
         {
+          prefix_name_id: 5,
           prefix_id: 3,
           prefix_name: 'varDecimal',
           is_default: true,
         },
         {
+          prefix_name_id: 6,
           prefix_id: 3,
           prefix_name: 'numberFloatVariable',
           is_default: false,
         },
         {
+          prefix_name_id: 7,
           prefix_id: 4,
           prefix_name: 'varBoolean',
           is_default: true,
         },
         {
+          prefix_name_id: 8,
           prefix_id: 4,
           prefix_name: 'booleanVariable',
           is_default: false,
         },
         {
+          prefix_name_id: 9,
           prefix_id: 5,
           prefix_name: 'varObject',
           is_default: true,
         },
         {
+          prefix_name_id: 10,
           prefix_id: 5,
           prefix_name: 'objectVariable',
           is_default: false,
@@ -384,12 +394,14 @@ async function main() {
     await prisma.snippet.createMany({
       data: [
         {
+          snippet_id: 1,
           snippet_type_id: 1,
           prefix_id: 1,
           snippet_content:
             'const ${1:stringVariable}: string = "${2:Hello, World!}";',
         },
         {
+          snippet_id: 2,
           snippet_type_id: 1,
           prefix_id: 2,
           snippet_content: 'int ${1:numberIntegerVariable} = ${2:100};',
@@ -399,8 +411,8 @@ async function main() {
 
     await prisma.snippet_language.createMany({
       data: [
-        { snippet_id: 1, language_id: 1 },
-        { snippet_id: 2, language_id: 2 },
+        { snippet_language_id: 1, snippet_id: 1, language_id: 1 },
+        { snippet_language_id: 2, snippet_id: 2, language_id: 2 },
       ],
     });
   } catch (error) {
