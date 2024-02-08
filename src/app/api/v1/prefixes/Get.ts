@@ -10,9 +10,33 @@ type PrefixResponse = prefix & {
 const GetHandler = async (req: NextRequest) => {
   try {
     // prefixes?language=value
-    const language = req.nextUrl.searchParams.get('language');
-    if (language !== null) {
-      return NextResponse.json({ language });
+    const unusedByLanguage = req.nextUrl.searchParams.get('unused-by-language');
+    if (unusedByLanguage !== null) {
+      const sql: string = /*sql*/ `
+        WITH LanguageCheck AS (
+          SELECT 1
+          FROM "language"
+          WHERE "language_name" = '${unusedByLanguage}'
+        ),
+        PrefixesNotUsedByJava AS (
+          SELECT p.*
+          FROM "prefix" p
+          WHERE NOT EXISTS (
+            SELECT 1
+            FROM "snippet" s
+            JOIN "snippet_language" sl ON s."snippet_id" = sl."snippet_id"
+            JOIN "language" l ON sl."language_id" = l."language_id"
+            WHERE l."language_name" = '${unusedByLanguage}'
+            AND s."prefix_id" = p."prefix_id"
+          )
+        )
+        SELECT pnu.*
+        FROM PrefixesNotUsedByJava pnu
+        WHERE EXISTS (SELECT 1 FROM LanguageCheck);
+    `;
+      const result: PrefixResponse = await prisma.$queryRawUnsafe(sql);
+
+      return NextResponse.json(DatatypeParser(result));
     }
 
     const sql: string = /*sql*/ `
