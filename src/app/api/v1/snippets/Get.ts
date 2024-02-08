@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { language, prefix, prefix_name, snippet } from '@prisma/client';
+import { Prisma, language, prefix, prefix_name, snippet } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
@@ -51,7 +51,8 @@ const GetHandler = async (req: NextRequest) => {
     -- WHERE l.language_name = '${language}'
     GROUP BY snippet.snippet_id, prefix.prefix_id;
   `;
-    const result: SnippetResponseType[] = await prisma.$queryRawUnsafe(sql);
+    const result: SnippetResponseType[] =
+      await prisma.$queryRaw`${Prisma.sql([sql])}`;
     return NextResponse.json(DatatypeParser(result));
   } catch (error) {
     console.error(error);

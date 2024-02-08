@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prefix, prefix_name } from '@prisma/client';
+import { Prisma, prefix, prefix_name } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
@@ -34,7 +34,8 @@ const GetHandler = async (req: NextRequest) => {
         FROM PrefixesNotUsedByJava pnu
         WHERE EXISTS (SELECT 1 FROM LanguageCheck);
     `;
-      const result: PrefixResponse = await prisma.$queryRawUnsafe(sql);
+      const result: PrefixResponse =
+        await prisma.$queryRaw`${Prisma.sql([sql])}`;
 
       return NextResponse.json(DatatypeParser(result));
     }
@@ -47,7 +48,7 @@ const GetHandler = async (req: NextRequest) => {
         JOIN prefix_name pn ON p.prefix_id = pn.prefix_id
         GROUP BY p.prefix_id;
     `;
-    const result: PrefixResponse = await prisma.$queryRawUnsafe(sql);
+    const result: PrefixResponse = await prisma.$queryRaw`${Prisma.sql([sql])}`;
 
     return NextResponse.json(DatatypeParser(result));
   } catch (error) {

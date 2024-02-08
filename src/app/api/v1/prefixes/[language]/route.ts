@@ -1,6 +1,6 @@
 import { prisma } from '@/prisma/DatabaseClient';
 import DatatypeParser from '@/utils/DataTypeParser';
-import { prefix, prefix_name } from '@prisma/client';
+import { Prisma, prefix, prefix_name } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 type PrefixResponse = prefix & {
@@ -28,7 +28,7 @@ export async function GET(
         WHERE l.language_name = '${language}'
         GROUP BY p.prefix_id;
     `;
-    const result: PrefixResponse = await prisma.$queryRawUnsafe(sql);
+    const result: PrefixResponse = await prisma.$queryRaw`${Prisma.sql([sql])}`;
     return NextResponse.json(DatatypeParser(result));
   } catch (error) {
     console.error(error);
