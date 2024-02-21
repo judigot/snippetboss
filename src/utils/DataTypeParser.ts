@@ -37,7 +37,7 @@ const castRowValues = (data: RowData): RowData => {
         break;
       case 'object':
         if (value instanceof Decimal) {
-          rows[key] = parseFloat(value as unknown as string);
+          rows[key] = parseFloat(String(value));
         }
 
         // Array
