@@ -3,7 +3,7 @@ import { Prisma, prefix, prefix_name } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
-type PrefixResponse = prefix & {
+export type PrefixResponse = prefix & {
   prefix_names: prefix_name[];
 };
 
