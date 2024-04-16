@@ -3,18 +3,23 @@ import { Prisma, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  try {
-    let sql: string = /*sql*/ `
-      DROP SCHEMA public CASCADE;
-    `;
-    await prisma.$queryRaw`${Prisma.sql([sql])}`;
+  const sql = /*sql*/ `
+    DROP SCHEMA public CASCADE;
+    CREATE SCHEMA public;
+  `;
 
-    sql = /*sql*/ `
-      CREATE SCHEMA public;
-    `;
-    await prisma.$queryRaw`${Prisma.sql([sql])}`;
+  // Split the SQL on semicolons and filter out empty statements
+  const statements = sql
+    .split(';')
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+
+  try {
+    for (const statement of statements) {
+      await prisma.$executeRaw`${Prisma.sql([statement])}`;
+    }
   } catch (error) {
-    console.error(error);
+    console.error('Error:', error);
   } finally {
     await prisma.$disconnect();
   }
