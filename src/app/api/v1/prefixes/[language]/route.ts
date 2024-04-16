@@ -19,14 +19,16 @@ export async function GET(
     const sql: string = /*sql*/ `
         SELECT 
             p.*,
+            st.snippet_type_name,
             json_agg(pn.*) AS prefix_names
         FROM prefix p
+        JOIN snippet_type st ON p.snippet_type_id = st.snippet_type_id
         JOIN prefix_name pn ON p.prefix_id = pn.prefix_id
         JOIN snippet s ON p.prefix_id = s.prefix_id
         JOIN snippet_language sl ON s.snippet_id = sl.snippet_id
         JOIN language l ON sl.language_id = l.language_id
         WHERE l.language_name = '${language}'
-        GROUP BY p.prefix_id;
+        GROUP BY p.prefix_id, st.snippet_type_id;
     `;
     const result: PrefixResponse = await prisma.$queryRaw`${Prisma.sql([sql])}`;
     return NextResponse.json(DatatypeParser(result));
