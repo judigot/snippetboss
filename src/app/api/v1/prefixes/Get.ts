@@ -47,10 +47,12 @@ const GetHandler = async (req: NextRequest) => {
     const sql: string = /*sql*/ `
         SELECT
             p.*,
+            st.snippet_type_name,
             json_agg(pn.*) AS prefix_names
         FROM prefix p
+        JOIN snippet_type st ON p.snippet_type_id = st.snippet_type_id
         JOIN prefix_name pn ON p.prefix_id = pn.prefix_id
-        GROUP BY p.prefix_id;
+        GROUP BY p.prefix_id, st.snippet_type_id;
     `;
     const result: PrefixResponse = await prisma.$queryRaw`${Prisma.sql([sql])}`;
 
