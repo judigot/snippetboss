@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma, prefix, prefix_name } from '@prisma/client';
+import { Prisma, prefix, prefix_name, snippet_type } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
-export type PrefixResponse = prefix & {
+export type PrefixResponse = prefix & snippet_type & {
   prefix_names: prefix_name[];
 };
 
