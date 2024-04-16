@@ -14,12 +14,6 @@ const PostHandler = async (req: NextRequest) => {
   try {
     const body = (await req.json()) as Body;
 
-    const languageIDs = body.language.map((language) => language.language_id);
-
-    // const result = languageIDs.map((id) => ({ language_id: id }));
-
-    // console.log(result);
-
     const result: Response = await prisma.$transaction(async (transaction) => {
       // Insert the snippet
       const newSnippetResult: Response = DatatypeParser(

@@ -3,11 +3,11 @@ import { prisma } from '@/prisma/DatabaseClient';
 import { PrefixResponse } from '@/app/api/v1/prefixes/Get';
 import { Prisma } from '@prisma/client';
 
-interface Body extends Omit<PrefixResponse, 'prefix_id'> {}
+interface Body extends Omit<PrefixResponse, 'prefix_id' | 'snippet_type_id'> {}
 
 const PostHandler = async (req: NextRequest) => {
   try {
-    const body: Body = await req.json();
+    const body = await req.json() as Body;
 
     // Start transaction
     await prisma.$executeRaw`BEGIN`;
