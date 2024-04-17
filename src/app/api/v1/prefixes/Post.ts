@@ -4,16 +4,17 @@ import { PrefixResponse } from '@/app/api/v1/prefixes/Get';
 import { Prisma } from '@prisma/client';
 
 interface Body extends Omit<PrefixResponse, 'prefix_id' | 'snippet_type_id'> {}
+interface FormBody extends Omit<PrefixResponse, 'prefix_id'> {}
 
 const PostHandler = async (req: NextRequest) => {
   try {
-    const body = await req.json() as Body;
+    const body = (await req.json()) as FormBody;
 
     // Start transaction
     await prisma.$executeRaw`BEGIN`;
 
     // Insert into prefix and get the id
-    const prefixInsertionQuery = Prisma.sql`INSERT INTO prefix (prefix_description) VALUES (${body.prefix_description}) RETURNING prefix_id`;
+    const prefixInsertionQuery = Prisma.sql`INSERT INTO prefix (prefix_description, snippet_type_id) VALUES (${body.prefix_description}, ${body.snippet_type_id}) RETURNING prefix_id`;
     const prefixResult: { prefix_id: number }[] =
       await prisma.$queryRaw(prefixInsertionQuery);
 
