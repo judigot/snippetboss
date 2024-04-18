@@ -64,6 +64,19 @@ async function main() {
         FOREIGN KEY ("prefix_id")
           REFERENCES "prefix"("prefix_id")
     );
+
+    CREATE TABLE "prefix_language" (
+      "prefix_language_id" BIGSERIAL NOT NULL,
+      "prefix_id" BIGINT NOT NULL,
+      "language_id" BIGINT NOT NULL, UNIQUE ("language_id", "prefix_id"),
+      PRIMARY KEY ("prefix_language_id"),
+      CONSTRAINT "FK_prefix_language.language_id"
+        FOREIGN KEY ("language_id")
+          REFERENCES "language"("language_id"),
+      CONSTRAINT "FK_prefix_language.prefix_id"
+        FOREIGN KEY ("prefix_id")
+          REFERENCES "prefix"("prefix_id")
+    );
   `;
 
   // Split the SQL on semicolons and filter out empty statements
