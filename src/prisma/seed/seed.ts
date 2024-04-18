@@ -19,6 +19,7 @@ async function main() {
           display_name: 'TypeScript',
         },
         { language_id: 2, language_name: 'java', display_name: 'Java' },
+        { language_id: 3, language_name: 'react', display_name: 'React' },
       ],
     });
 
@@ -47,6 +48,11 @@ async function main() {
         {
           prefix_id: 5,
           prefix_description: 'Description',
+          snippet_type_id: 1,
+        },
+        {
+          prefix_id: 6,
+          prefix_description: 'Iterate React JSX',
           snippet_type_id: 1,
         },
       ],
@@ -114,6 +120,18 @@ async function main() {
           prefix_name: 'objectVariable',
           is_default: false,
         },
+        {
+          prefix_name_id: 11,
+          prefix_id: 6,
+          prefix_name: 'iterateReactJSX',
+          is_default: false,
+        },
+      ],
+    });
+
+    await prisma.prefix_language.createMany({
+      data: [
+        { prefix_language_id: 1, prefix_id: 6, language_id: 3 },
       ],
     });
 
