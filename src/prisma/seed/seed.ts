@@ -170,7 +170,7 @@ function createInsertSQL(
   return `INSERT INTO "${tableName}" (${columns}) VALUES ${values} ON CONFLICT DO NOTHING;`;
 }
 
-async function main() {
+export default async function main() {
   for (const [tableName, rows] of Object.entries(tableInfo)) {
     const sql = createInsertSQL(tableName, rows);
     if (sql) {

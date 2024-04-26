@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
+export async function DeleteTables() {
   const sql = /*sql*/ `
     DROP SCHEMA public CASCADE;
     CREATE SCHEMA public;
@@ -25,6 +25,10 @@ async function main() {
   }
 }
 
-void (async () => {
-  await main();
-})();
+export default async function main(): Promise<void> {
+  if (require.main === module) {
+    await DeleteTables();
+  }
+}
+
+main();

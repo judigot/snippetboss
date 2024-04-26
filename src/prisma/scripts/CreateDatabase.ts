@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
+export async function CreateDatabase() {
   const sql = /*sql*/ `
     CREATE TABLE "snippet_type" (
       "snippet_type_id" BIGSERIAL NOT NULL,
@@ -96,4 +96,10 @@ async function main() {
   }
 }
 
-void main();
+export default async function main(): Promise<void> {
+  if (require.main === module) {
+    await CreateDatabase();
+  }
+}
+
+main();
