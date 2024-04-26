@@ -28,12 +28,12 @@ async function main() {
         {
           prefix_id: 1,
           prefix_description: 'String Variable',
-          snippet_type_id: 1,
+          snippet_type_id: 2,
         },
         {
           prefix_id: 2,
           prefix_description: 'Integer Number Variable',
-          snippet_type_id: 1,
+          snippet_type_id: 2,
         },
         {
           prefix_id: 3,
