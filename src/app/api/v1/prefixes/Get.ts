@@ -3,9 +3,10 @@ import { Prisma, prefix, prefix_name, snippet_type } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
-export type PrefixResponse = prefix & snippet_type & {
-  prefix_names: prefix_name[];
-};
+export type PrefixResponse = prefix &
+  snippet_type & {
+    prefix_names: prefix_name[];
+  };
 
 const GetHandler = async (req: NextRequest) => {
   try {
