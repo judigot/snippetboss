@@ -18,7 +18,7 @@ const GetHandler = async (req: NextRequest) => {
           FROM "language"
           WHERE "language_name" = '${unusedByLanguage}'
         ),
-        PrefixesNotUsedByJava AS (
+        PrefixesNotUsedByLanguage AS (
           SELECT
             p.*,
             json_agg(pn.*) AS prefix_names
@@ -35,7 +35,7 @@ const GetHandler = async (req: NextRequest) => {
           GROUP BY p.prefix_id
         )
         SELECT pnu.*
-        FROM PrefixesNotUsedByJava pnu
+        FROM PrefixesNotUsedByLanguage pnu
         WHERE EXISTS (SELECT 1 FROM LanguageCheck);
     `;
       const result: PrefixResponse =
