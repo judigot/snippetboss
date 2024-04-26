@@ -37,7 +37,7 @@ const GetHandler = async (req: NextRequest) => {
         SELECT pnu.*
         FROM PrefixesNotUsedByLanguage pnu
         WHERE EXISTS (SELECT 1 FROM LanguageCheck);
-    `;
+      `;
       const result: PrefixResponse =
         await prisma.$queryRaw`${Prisma.sql([sql])}`;
 
