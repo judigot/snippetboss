@@ -4,12 +4,13 @@ import { PrefixResponse } from '@/app/api/v1/prefixes/Get';
 import { Prisma } from '@prisma/client';
 
 interface Body extends Omit<PrefixResponse, 'prefix_id' | 'snippet_type_id'> {}
-interface FormBody extends Omit<PrefixResponse, 'prefix_id'> {}
+interface FormBody extends Omit<PrefixResponse, 'prefix_id'> {
+  prefix_language: string[];
+}
 
 const PostHandler = async (req: NextRequest) => {
+  const body = (await req.json()) as FormBody;
   try {
-    const body = (await req.json()) as FormBody;
-
     // Start transaction
     await prisma.$executeRaw`BEGIN`;
 
@@ -26,6 +27,20 @@ const PostHandler = async (req: NextRequest) => {
         Prisma.sql`INSERT INTO prefix_name (prefix_id, prefix_name, is_default) VALUES (${prefixId}, ${prefixName.prefix_name}, ${prefixName.is_default})`,
       );
     }
+
+    // Insert into prefix_language
+    const prefixLanguageInsertionQuery = Prisma.sql`
+    WITH SelectedLanguageIDs AS (
+        SELECT language_id
+        FROM language
+        WHERE language_name = ANY(ARRAY[${body.prefix_language.join(', ')}])
+    )
+    INSERT INTO prefix_language (prefix_id, language_id)
+    SELECT ${prefixId}, language_id
+    FROM SelectedLanguageIDs
+    ON CONFLICT (language_id, prefix_id) DO NOTHING;
+    `;
+    await prisma.$queryRaw(prefixLanguageInsertionQuery);
 
     // Commit transaction
     await prisma.$executeRaw`COMMIT`;
