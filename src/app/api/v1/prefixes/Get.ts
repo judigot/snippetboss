@@ -42,7 +42,7 @@ const GetHandler = async (req: NextRequest) => {
         WITH LanguageCheck AS (
         SELECT 1
         FROM "language"
-        WHERE "language_name" = 'java'
+        WHERE "language_name" = '${unusedByLanguage}'
         ),
         PrefixesNotUsedByLanguage AS (
         SELECT
@@ -56,9 +56,9 @@ const GetHandler = async (req: NextRequest) => {
         SELECT 1
         FROM "language" l
         JOIN prefix_language pl2 ON l.language_id = pl2.language_id
-        WHERE l.language_name = 'java' AND p.prefix_id = pl2.prefix_id
+        WHERE l.language_name = '${unusedByLanguage}' AND p.prefix_id = pl2.prefix_id
         )
-        GROUP BY p.prefix_id
+        GROUP BY p.prefix_id ORDER BY p.prefix_id
         )
         SELECT *
         FROM PrefixesNotUsedByLanguage
@@ -66,7 +66,7 @@ const GetHandler = async (req: NextRequest) => {
         SELECT 1
         FROM LanguageCheck);
       `;
-      // console.log(sql);
+      console.log(sql);
       const result: PrefixResponse =
         await prisma.$queryRaw`${Prisma.sql([sql])}`;
       return NextResponse.json(DatatypeParser(result));
