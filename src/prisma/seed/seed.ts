@@ -122,9 +122,7 @@ const tableInfo: Record<
     },
   ],
   prefix_language: [
-    { prefix_language_id: 1, prefix_id: 1, language_id: 1 },
-    { prefix_language_id: 2, prefix_id: 2, language_id: 2 },
-    { prefix_language_id: 3, prefix_id: 6, language_id: 3 },
+    { prefix_language_id: 1, prefix_id: 6, language_id: 3 },
   ],
   snippet: [
     {
