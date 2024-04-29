@@ -69,7 +69,7 @@ const GetHandler = async (req: NextRequest) => {
       console.log(sql);
       const result: PrefixResponse =
         await prisma.$queryRaw`${Prisma.sql([sql])}`;
-      return NextResponse.json(result);
+      return NextResponse.json(DatatypeParser(result));
     }
 
     const sql: string = /*sql*/ `
