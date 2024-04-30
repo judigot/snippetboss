@@ -18,6 +18,7 @@ export async function DeleteTables() {
     for (const statement of statements) {
       await prisma.$executeRaw`${Prisma.sql([statement])}`;
     }
+    console.log('Successfully deleted tables.');
   } catch (error) {
     console.error('Error:', error);
   } finally {

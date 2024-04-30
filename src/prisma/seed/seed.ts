@@ -156,24 +156,29 @@ function createInsertSQL(
   return `INSERT INTO "${tableName}" (${columns}) VALUES ${values} ON CONFLICT DO NOTHING;`;
 }
 
-export default async function main() {
-  for (const [tableName, rows] of Object.entries(tableInfo)) {
-    const sql = createInsertSQL(tableName, rows);
-    if (sql) {
-      await prisma.$executeRawUnsafe(sql);
-      await prisma.$executeRawUnsafe(
-        `ALTER SEQUENCE ${tableName}_${Object.keys(rows[0])[0]}_seq RESTART WITH ${rows.length + 1};`,
-      );
+export async function Seed() {
+  try {
+    for (const [tableName, rows] of Object.entries(tableInfo)) {
+      const sql = createInsertSQL(tableName, rows);
+      if (sql) {
+        await prisma.$executeRawUnsafe(sql);
+        await prisma.$executeRawUnsafe(
+          `ALTER SEQUENCE ${tableName}_${Object.keys(rows[0])[0]}_seq RESTART WITH ${rows.length + 1};`,
+        );
+      }
     }
+    console.log('Successfully seeded data.');
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+export default async function main(): Promise<void> {
+  if (require.main === module) {
+    await Seed();
+  }
+}
+
+main();

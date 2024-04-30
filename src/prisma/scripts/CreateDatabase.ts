@@ -77,6 +77,7 @@ CREATE TABLE "prefix_name" (
     for (const statement of statements) {
       await prisma.$executeRaw`${Prisma.sql([statement])}`;
     }
+    console.log('Successfully created tables.');
   } catch (error) {
     console.error('Error:', error);
   } finally {

@@ -1,6 +1,6 @@
-import CreateDatabase from './CreateDatabase';
-import DeleteTables from './DeleteTables';
-import Seed from '../seed/seed';
+import { DeleteTables } from './DeleteTables';
+import { CreateDatabase } from './CreateDatabase';
+import { Seed } from '../seed/seed';
 
 (async () => {
   try {
