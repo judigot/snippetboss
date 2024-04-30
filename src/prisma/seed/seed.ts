@@ -8,10 +8,6 @@ const tableInfo: Record<
   ModelNames,
   Record<string, number | string | boolean>[]
 > = {
-  snippet_type: [
-    { snippet_type_id: 1, snippet_type_name: 'global' },
-    { snippet_type_id: 2, snippet_type_name: 'specific' },
-  ],
   language: [
     {
       language_id: 1,
@@ -25,32 +21,26 @@ const tableInfo: Record<
     {
       prefix_id: 1,
       prefix_description: 'String Variable',
-      snippet_type_id: 2,
     },
     {
       prefix_id: 2,
       prefix_description: 'Integer Number Variable',
-      snippet_type_id: 2,
     },
     {
       prefix_id: 3,
       prefix_description: 'Float Number Variable',
-      snippet_type_id: 1,
     },
     {
       prefix_id: 4,
       prefix_description: 'Boolean Variable',
-      snippet_type_id: 1,
     },
     {
       prefix_id: 5,
       prefix_description: 'Object Variable',
-      snippet_type_id: 1,
     },
     {
       prefix_id: 6,
       prefix_description: 'Iterate React JSX',
-      snippet_type_id: 2,
     },
   ],
   prefix_name: [
@@ -121,20 +111,18 @@ const tableInfo: Record<
       is_default: true,
     },
   ],
-  prefix_language: [
-    { prefix_language_id: 1, prefix_id: 6, language_id: 3 },
-  ],
+  prefix_language: [{ prefix_language_id: 1, prefix_id: 6, language_id: 3 }],
   snippet: [
     {
       snippet_id: 1,
-      snippet_type_id: 1,
+
       prefix_id: 1,
       snippet_content:
         'const ${1:stringVariable}: string = "${2:Hello, World!}";',
     },
     {
       snippet_id: 2,
-      snippet_type_id: 1,
+
       prefix_id: 2,
       snippet_content: 'int ${1:numberIntegerVariable} = ${2:100};',
     },

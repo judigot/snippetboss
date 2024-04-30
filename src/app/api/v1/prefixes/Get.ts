@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma, prefix, prefix_name, snippet_type } from '@prisma/client';
+import { Prisma, prefix, prefix_name } from '@prisma/client';
 import DatatypeParser from '@/utils/DataTypeParser';
 import { prisma } from '@/prisma/DatabaseClient';
 
-export type PrefixResponse = prefix &
-  snippet_type & {
-    prefix_names: prefix_name[];
-  };
+export type PrefixResponse = prefix & {
+  prefix_names: prefix_name[];
+};
 
 const GetHandler = async (req: NextRequest) => {
   try {
@@ -17,7 +16,6 @@ const GetHandler = async (req: NextRequest) => {
 WITH UnusedPrefixes AS (
     SELECT p.prefix_id,
         p.prefix_description,
-        p.snippet_type_id,
         json_agg(pn.*) AS prefix_names
     FROM prefix p
         JOIN prefix_name pn ON p.prefix_id = pn.prefix_id
@@ -30,8 +28,7 @@ WITH UnusedPrefixes AS (
                 AND s.prefix_id = p.prefix_id
         )
     GROUP BY p.prefix_id,
-        p.prefix_description,
-        p.snippet_type_id
+        p.prefix_description
 ),
 IncludeSpecificSnippets AS (
     SELECT pl.prefix_id
@@ -41,7 +38,6 @@ IncludeSpecificSnippets AS (
 )
 SELECT up.prefix_id,
     up.prefix_description,
-    up.snippet_type_id,
     up.prefix_names
 FROM UnusedPrefixes up
 WHERE up.prefix_id IN (
@@ -64,12 +60,10 @@ ORDER BY up.prefix_id;
     const sql: string = /*sql*/ `
         SELECT
             p.*,
-            st.snippet_type_name,
             json_agg(pn.*) AS prefix_names
         FROM prefix p
-        JOIN snippet_type st ON p.snippet_type_id = st.snippet_type_id
         JOIN prefix_name pn ON p.prefix_id = pn.prefix_id
-        GROUP BY p.prefix_id, st.snippet_type_id;
+        GROUP BY p.prefix_id;
     `;
     const result: PrefixResponse = await prisma.$queryRaw`${Prisma.sql([sql])}`;
 
