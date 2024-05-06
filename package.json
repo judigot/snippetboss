@@ -8,14 +8,14 @@
     "start": "next start",
     "lint": "next lint",
     "db:reset": "pnpm dotenv -e .env.local -- pnpm run db:drop && pnpm dotenv -e .env.local -- pnpm run prisma:db:push",
-    "db:reset-with-data": "pnpm dotenv -e .env.local -- ts-node --compilerOptions \"{\\\"module\\\":\\\"CommonJS\\\"}\" ./src/prisma/scripts/ResetWithData.ts",
+    "db:reset-with-data": "pnpm dotenv -e .env.local -- node -r esbuild-register ./src/prisma/scripts/ResetWithData.ts",
     "db:seed": "pnpm dotenv -e .env.local -- pnpm prisma db seed",
-    "db:drop": "pnpm dotenv -e .env.local -- ts-node --compilerOptions \"{\\\"module\\\":\\\"CommonJS\\\"}\" ./src/prisma/scripts/DeleteTables.ts",
+    "db:drop": "pnpm dotenv -e .env.local -- node -r esbuild-register ./src/prisma/scripts/DeleteTables.ts",
     "prisma:db:push": "pnpm dotenv -e .env.local -- pnpm prisma db push && pnpm prisma generate",
     "prisma:db:pull": "pnpm dotenv -e .env.local -- pnpm prisma db pull && pnpm prisma generate"
   },
   "prisma": {
-    "seed": "ts-node --compilerOptions {\"module\":\"CommonJS\"} ./src/prisma/seed/seed.ts",
+    "seed": "node -r esbuild-register ./src/prisma/seed/seed.ts",
     "schema": "src/prisma/schema.prisma"
   },
   "dependencies": {
@@ -38,6 +38,8 @@
     "@typescript-eslint/parser": "^6.19.0",
     "autoprefixer": "^10.0.1",
     "dotenv-cli": "^7.3.0",
+    "esbuild": "^0.20.2",
+    "esbuild-register": "^3.5.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.0.4",
     "eslint-config-prettier": "^9.1.0",
@@ -53,7 +55,6 @@
     "prisma": "^5.8.1",
     "styled-components": "^6.1.8",
     "tailwindcss": "^3.4.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "vite-tsconfig-paths": "^4.2.3",
     "vitest": "^1.2.0"
