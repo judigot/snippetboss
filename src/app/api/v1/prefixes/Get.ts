@@ -51,7 +51,6 @@ WHERE up.prefix_id IN (
     )
 ORDER BY up.prefix_id;
       `;
-      console.log(sql);
       const result: PrefixResponse =
         await prisma.$queryRaw`${Prisma.sql([sql])}`;
       return NextResponse.json(DatatypeParser(result));

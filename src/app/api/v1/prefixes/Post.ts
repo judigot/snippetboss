@@ -3,7 +3,6 @@ import { prisma } from '@/prisma/DatabaseClient';
 import { PrefixResponse } from '@/app/api/v1/prefixes/Get';
 import { Prisma } from '@prisma/client';
 
-interface Body extends Omit<PrefixResponse, 'prefix_id'> {}
 interface FormBody extends Omit<PrefixResponse, 'prefix_id'> {
   prefix_language: string[];
 }

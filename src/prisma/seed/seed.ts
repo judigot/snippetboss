@@ -144,13 +144,16 @@ function createInsertSQL(
     .join(', ');
 
   const values = data
-    .map((row) => {
-      return `(${Object.values(row)
-        .map((value) =>
-          typeof value === 'string' ? `'${value.replace(/'/g, "''")}'` : value,
-        )
-        .join(', ')})`;
-    })
+    .map(
+      (row) =>
+        `(${Object.values(row)
+          .map((value) =>
+            typeof value === 'string'
+              ? `'${value.replace(/'/g, "''")}'`
+              : value,
+          )
+          .join(', ')})`,
+    )
     .join(',\n');
 
   return `INSERT INTO "${tableName}" (${columns}) VALUES ${values} ON CONFLICT DO NOTHING;`;
@@ -167,6 +170,7 @@ export async function Seed() {
         );
       }
     }
+    // eslint-disable-next-line no-console
     console.log('Successfully seeded data.');
   } catch (error) {
     console.error('Error:', error);
@@ -181,4 +185,4 @@ export default async function main(): Promise<void> {
   }
 }
 
-main();
+void main();

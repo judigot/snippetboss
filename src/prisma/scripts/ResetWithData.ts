@@ -2,7 +2,7 @@ import { DeleteTables } from './DeleteTables';
 import { CreateDatabase } from './CreateDatabase';
 import { Seed } from '../seed/seed';
 
-(async () => {
+void (async () => {
   try {
     await DeleteTables();
     await CreateDatabase();

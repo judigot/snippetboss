@@ -77,6 +77,7 @@ CREATE TABLE "prefix_name" (
     for (const statement of statements) {
       await prisma.$executeRaw`${Prisma.sql([statement])}`;
     }
+    // eslint-disable-next-line no-console
     console.log('Successfully created tables.');
   } catch (error) {
     console.error('Error:', error);
@@ -91,4 +92,4 @@ export default async function main(): Promise<void> {
   }
 }
 
-main();
+void main();
