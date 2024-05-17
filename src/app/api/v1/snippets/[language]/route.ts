@@ -53,6 +53,9 @@ export async function GET(
     return NextResponse.json(DatatypeParser(result));
   } catch (error) {
     console.error(error);
+    return NextResponse.json({
+      error: error,
+    });
   } finally {
     await prisma.$disconnect();
   }

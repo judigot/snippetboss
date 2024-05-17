@@ -14,6 +14,9 @@ const PostHandler = async (req: NextRequest) => {
     return NextResponse.json(DatatypeParser(result), { status: 200 });
   } catch (error) {
     console.error(error);
+    return NextResponse.json({
+      error: error,
+    });
   } finally {
     await prisma.$disconnect();
   }
