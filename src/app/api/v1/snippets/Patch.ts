@@ -23,6 +23,9 @@ const PatchHandler = async (req: NextRequest) => {
     });
   } catch (error) {
     console.error(error);
+    return NextResponse.json({
+      error: error,
+    });
   } finally {
     await prisma.$disconnect();
   }
