@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const tableInfo: Record<
   ModelNames,
-  Record<string, null | number | string | boolean>[]
+  Record<string, unknown>[]
 > = {
   language: [
     {
